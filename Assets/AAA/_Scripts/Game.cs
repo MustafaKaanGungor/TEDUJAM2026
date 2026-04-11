@@ -1,8 +1,10 @@
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Game : MonoBehaviour
 {
@@ -11,7 +13,22 @@ public class Game : MonoBehaviour
     private int _currentDay = 0;
     [SerializeField] private GameObject _npcPrefab;
     [SerializeField] private Transform _spawnTransform;
+    [SerializeField] private InputActionReference _action;
+    private bool _canPerform = false;
 
+    private void OnEnable()
+    {
+        _action.action.performed += ChangeInputAuthorityToNpc;
+        GameEvents.ChangeInputAuthorityToPlayer += OnChangeInputAuthorityToPlayer;
+    }
+
+
+
+    private void OnDisable()
+    {
+        _action.action.performed -= ChangeInputAuthorityToNpc;
+        GameEvents.ChangeInputAuthorityToPlayer -= OnChangeInputAuthorityToPlayer;
+    }
     private void Start()
     {
         DayStarted();
@@ -41,8 +58,10 @@ public class Game : MonoBehaviour
             }
             else
             {
-                var npc = new GameObject($"Npc_{i}").AddComponent<Npc>();
-                npc.Initialize(_allNpcs[i]);
+                var newNpc = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
+                newNpc.SetActive(false);
+                var npc = newNpc.GetComponent<Npc>();
+                //npc.Initialize(_allNpcs[i]);
                 _currentNpcs.Add(npc);
 
             }
@@ -51,12 +70,30 @@ public class Game : MonoBehaviour
     private void DayStarted()
     {
         _currentDay++;
+        AddNpcToList();
         GameEvents.DayChanged?.Invoke(_currentDay);
         GameEvents.PlaySound?.Invoke("Morning");
-        GameObject newNpc = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
+        //lsiteden 1. npc yi getir
     }
     private void DayFinished()
     {
         GameEvents.PlaySound?.Invoke("Evening");
+    }
+    private void ChangeInputAuthorityToNpc(InputAction.CallbackContext context)
+    {
+        if (_canPerform)
+        {
+            _canPerform = false;
+            GameEvents.ChangeInputAuthorityToNpc?.Invoke();
+        }
+
+    }
+    private void OnChangeInputAuthorityToPlayer()
+    {
+        _canPerform = true;
+    }
+    private void GetCurrentNpcFromList()
+    {
+
     }
 }

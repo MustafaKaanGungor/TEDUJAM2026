@@ -32,6 +32,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ChangeAuthority",
+                    "type": "Button",
+                    "id": "1cb852bf-7c76-48b4-bd02-00a7aa3833ac",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -87,6 +96,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "MoveCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "208c7bce-4ac1-41aa-95f2-7d182d987ef4",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeAuthority",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
