@@ -4,6 +4,8 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text _dayText;
+    [SerializeField] private GameObject _speechBubble;
+    [SerializeField] private TMP_Text _speechText;
     private void OnEnable()
     {
         GameEvents.DayChanged += UpdateDayUI;

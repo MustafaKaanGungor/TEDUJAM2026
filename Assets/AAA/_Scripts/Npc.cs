@@ -95,9 +95,11 @@ public class Npc : MonoBehaviour
     private void PerformStage2()
     {
         _isPerforming = true;
-        Debug.Log("NPC merkeze ulaþtý ve bilgi veriyor.");
 
-        // Diyalog simülasyonu için 1 saniye bekletme eklendi
+        WorldUIManager.instance.ShowSpeechBubble(NpcData.Dialogues[0].direction1.ToString());
+        Debug.Log("NPC merkeze ulaï¿½tï¿½ ve bilgi veriyor.");
+
+        // Diyalog simï¿½lasyonu iï¿½in 1 saniye bekletme eklendi
         DOVirtual.DelayedCall(1f, () =>
         {
             NextStage();
@@ -110,9 +112,9 @@ public class Npc : MonoBehaviour
     private void PerformStage3()
     {
         _isPerforming = true;
-        Debug.Log("NPC bilgi verdi ve gitmek istediði yeri söylüyor.");
+        Debug.Log("NPC bilgi verdi ve gitmek istediï¿½i yeri sï¿½ylï¿½yor.");
 
-        // Diyalog simülasyonu için 1 saniye bekletme eklendi
+        // Diyalog simï¿½lasyonu iï¿½in 1 saniye bekletme eklendi
         DOVirtual.DelayedCall(1f, () =>
         {
             NextStage();
@@ -134,11 +136,11 @@ public class Npc : MonoBehaviour
             .SetEase(Ease.Linear)
             .OnComplete(() =>
             {
-                Debug.Log("NPC merkeze ulaþtý ve durdu.");
+                Debug.Log("NPC merkeze ulaï¿½tï¿½ ve durdu.");
                 NextStage();
-                _isPerforming = false; // Animasyon bitti, Update döngüsü devam edebilir
+                _isPerforming = false; // Animasyon bitti, Update dï¿½ngï¿½sï¿½ devam edebilir
                 _canMove = false;
-                GameEvents.ChangeInputAuthorityToPlayer?.Invoke();
+                GameEvents.ChangeInputAuthorityToNpc?.Invoke();
             });
     }
 
@@ -148,17 +150,17 @@ public class Npc : MonoBehaviour
            .SetEase(Ease.Linear)
            .OnComplete(() =>
            {
-               Debug.Log("NPC hedefe ulaþtý ve durdu.");
-               // Eðer sahnede baþka bir aþama yoksa veya obje yok edilecekse iþlemleri buraya ekle
+               Debug.Log("NPC hedefe ulaï¿½tï¿½ ve durdu.");
+               // Eï¿½er sahnede baï¿½ka bir aï¿½ama yoksa veya obje yok edilecekse iï¿½lemleri buraya ekle
                _isPerforming = false;
                _canMove = false;
-               GameEvents.ChangeInputAuthorityToPlayer?.Invoke();
+               GameEvents.ChangeInputAuthorityToNpc?.Invoke();
                OnNpcFinished?.Invoke();
            });
     }
     public void Die()
     {
         IsDead = true;
-        OnNpcFinished?.Invoke(); // Ölünce de conversation bitiyor
+        OnNpcFinished?.Invoke(); // ï¿½lï¿½nce de conversation bitiyor
     }
 }

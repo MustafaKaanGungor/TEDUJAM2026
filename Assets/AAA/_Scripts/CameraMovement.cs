@@ -1,12 +1,13 @@
 using DG.Tweening;
 using System;
+using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
 {
-     private Camera _camera;
+     private CinemachineCamera _camera;
     [SerializeField] private InputActionAsset _inputActions;
     [SerializeField] private InputActionReference _actionReferance;
     [SerializeField] private Vector3 defaultRotation = new(0, 0, 0);
@@ -15,8 +16,7 @@ public class CameraMovement : MonoBehaviour
     private bool _isCameraUp = true;
     private void OnEnable()
     {
-        _camera = GetComponent<Camera>();
-        _camera = Camera.main;
+        _camera = GetComponent<CinemachineCamera>();
         _inputActions.Enable();
         _inputActions.FindAction("CameraUp").performed += OnMoveUp;
         _inputActions.FindAction("CameraDown").performed += OnMoveDown;

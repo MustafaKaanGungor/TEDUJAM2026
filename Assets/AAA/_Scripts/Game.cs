@@ -18,21 +18,19 @@ public class Game : MonoBehaviour
     private int _currentNpcIndex = 0;
     private int _nextNpcIndex = 0;
     private const int MAX_NPC_COUNT = 3;
+    private MapGenerator map;
     private void OnEnable()
     {
         _action.action.performed += ChangeInputAuthorityToNpc;
         GameEvents.ChangeInputAuthorityToPlayer += OnChangeInputAuthorityToPlayer;
     }
 
-
-
     private void OnDisable()
     {
         _action.action.performed -= ChangeInputAuthorityToNpc;
         GameEvents.ChangeInputAuthorityToPlayer -= OnChangeInputAuthorityToPlayer;
-    }    private MapGenerator map;
-    [SerializeField] private NpcData data;
-
+    }    
+    
     private void Awake() {
         map = GetComponent<MapGenerator>();
     }
