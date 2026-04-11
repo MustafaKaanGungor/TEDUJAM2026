@@ -24,20 +24,20 @@ public class SoundManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // Event isimleri projenizdeki isimlendirmeye göre güncellenmelidir.
+        GameEvents.PlaySound += OnPlaySound;
     }
 
     private void OnDisable()
     {
-
+        GameEvents.PlaySound -= OnPlaySound;
     }
 
-    private void OnPlaySound(string key, Vector2 position)
+    private void OnPlaySound(string key)
     {
         // Dictionary içinde döngü yapmak yerine doðrudan anahtar ile sorgulama yapýlýr.
         if (_soundPrefabs.TryGetValue(key, out GameObject prefabToSpawn))
         {
-            LeanPool.Spawn(prefabToSpawn, position, Quaternion.identity, this.transform);
+            LeanPool.Spawn(prefabToSpawn, transform.position, Quaternion.identity, this.transform);
         }
         else
         {
