@@ -11,6 +11,12 @@ public class Game : MonoBehaviour
     private int _currentDay = 0;
     [SerializeField] private GameObject _npcPrefab;
     [SerializeField] private Transform _spawnTransform;
+    private MapGenerator map;
+    [SerializeField] private NpcData data;
+
+    private void Awake() {
+        map = GetComponent<MapGenerator>();
+    }
 
     private void Start()
     {
@@ -54,6 +60,7 @@ public class Game : MonoBehaviour
         GameEvents.DayChanged?.Invoke(_currentDay);
         GameEvents.PlaySound?.Invoke("Morning");
         GameObject newNpc = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
+        newNpc.GetComponent<Npc>().Initialize(data);
     }
     private void DayFinished()
     {

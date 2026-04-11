@@ -84,7 +84,7 @@ public class Draw : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10f, drawingLayer))//Check if the ray hits something
         {
-            drawingCursor.position = new Vector3(hit.point.x, drawingCursor.position.y, hit.point.z);
+            drawingCursor.position = new Vector3(hit.point.x, hit.point.y + 0.001f, hit.point.z + 0.001f);
 
             if(Input.GetMouseButton(0))
             {
