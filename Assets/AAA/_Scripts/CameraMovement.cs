@@ -9,6 +9,9 @@ public class CameraMovement : MonoBehaviour
      private Camera _camera;
     [SerializeField] private InputActionAsset _inputActions;
     [SerializeField] private InputActionReference _actionReferance;
+    [SerializeField] private Vector3 defaultRotation = new(0, 0, 0);
+    [SerializeField] private Vector3 mapRotation = new(90, 0, 0);
+
     private bool _isCameraUp = true;
     private void OnEnable()
     {
@@ -33,11 +36,11 @@ public class CameraMovement : MonoBehaviour
     {
         var value = context.ReadValue<Vector2>();
 
-        if (value.y > 0 || !_isCameraUp)
+        if (value.y > 0.5 || !_isCameraUp)
         {
             OnMoveUp(context);
         }
-        else if (value.y < 0||_isCameraUp)
+        else if (value.y < -0.5 ||_isCameraUp)
         {
             OnMoveDown(context);
         }
@@ -45,10 +48,9 @@ public class CameraMovement : MonoBehaviour
 
     private void OnMoveDown(InputAction.CallbackContext context)
     {
-        Debug.Log("CameraDown");
         if (_isCameraUp)
         {
-            _camera.transform.DORotate(new Vector3(90, 0, 0), 1f);
+            _camera.transform.DORotate(mapRotation, 1f);
             _isCameraUp = false;
         }
 
@@ -56,10 +58,9 @@ public class CameraMovement : MonoBehaviour
 
     private void OnMoveUp(InputAction.CallbackContext context)
     {
-        Debug.Log("CameraUp");
         if (!_isCameraUp)
         {
-            _camera.transform.DORotate(new Vector3(0, 0, 0), 1f);
+            _camera.transform.DORotate(defaultRotation, 1f);
             _isCameraUp = true;
         }
     }

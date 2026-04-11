@@ -1,14 +1,15 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Draw : MonoBehaviour
 {
-    public Camera cam;//Reference to the camera in the scene
- 
-    //Canvas dimensions
+    //[SerializeField] private InputActionAsset _inputActions;
+
+    private Camera cam;
     public int totalXPixels = 1024;
     public int totalYPixels = 512;
  
-    //Brush properties
     private int brushSize;
     public int penSize = 4;
     public Color brushColor;
@@ -44,9 +45,13 @@ public class Draw : MonoBehaviour
     float yMult;
 
     private bool isErasing = false;
+
+    [SerializeField] private RectTransform drawingCursor;
+    [SerializeField] private LayerMask drawingLayer;   
  
     private void Start()
     {
+        cam = Camera.main;
         //Initializing the colorMap array with width * height elements
         colorMap = new Color[totalXPixels * totalYPixels];
         generatedTexture = new Texture2D(totalYPixels, totalXPixels, TextureFormat.RGBA32, false); //Generating a new texture with width and height
@@ -60,15 +65,13 @@ public class Draw : MonoBehaviour
         xMult = totalXPixels / (bottomRightCorner.localPosition.x - topLeftCorner.localPosition.x);//Precalculating constants
         yMult = totalYPixels / (bottomRightCorner.localPosition.z - topLeftCorner.localPosition.z);
     }
- 
+
+
     private void Update()
     {
-        if (Input.GetMouseButton(0))//If the mouse is pressed, call the function
-            CalculatePixel();
-        else //Else, we did not draw, so on the next frame we should not apply interpolation
-            pressedLastFrame = false;
+        CalculatePixel();
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.E))
         {
             isErasing = !isErasing;
             brushSize = isErasing ? penSize * 3: penSize;
@@ -79,12 +82,21 @@ public class Draw : MonoBehaviour
     {
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);//Get a ray from the center of the camera to the mouse position
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 10f))//Check if the ray hits something
+        if (Physics.Raycast(ray, out hit, 10f, drawingLayer))//Check if the ray hits something
         {
-            point.position = hit.point;//Move to pointer to the place where the mouse intersects the canvas
-            xPixel = (int)((point.localPosition.x - topLeftCorner.localPosition.x) * xMult); //Calculate the position in pixels
-            yPixel = (int)((point.localPosition.z - topLeftCorner.localPosition.z) * yMult);
-            ChangePixelsAroundPoint(); //Call the next function
+            drawingCursor.position = new Vector3(hit.point.x, drawingCursor.position.y, hit.point.z);
+
+            if(Input.GetMouseButton(0))
+            {
+                point.position = hit.point;//Move to pointer to the place where the mouse intersects the canvas    
+                xPixel = (int)((point.localPosition.x - topLeftCorner.localPosition.x) * xMult); //Calculate the position in pixels
+                yPixel = (int)((point.localPosition.z - topLeftCorner.localPosition.z) * yMult);
+                ChangePixelsAroundPoint(); //Call the next function
+            } else
+            {
+                pressedLastFrame = false;
+            }
+            
         }
         else
             pressedLastFrame = false; //We did not draw, so the next frame we should not apply interpolation
