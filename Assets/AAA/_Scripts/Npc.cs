@@ -96,7 +96,7 @@ public class Npc : MonoBehaviour
     {
         _isPerforming = true;
 
-        WorldUIManager.instance.ShowSpeechBubble(NpcData.Dialogues[0].direction1.ToString());
+        WorldUIManager.instance.ShowSpeechBubble(NpcData.Dialogues);
         Debug.Log("NPC merkeze ula�t� ve bilgi veriyor.");
 
         // Diyalog sim�lasyonu i�in 1 saniye bekletme eklendi
@@ -112,6 +112,7 @@ public class Npc : MonoBehaviour
     private void PerformStage3()
     {
         _isPerforming = true;
+        WorldUIManager.instance.ShowSecondStageUI(NpcData.DesiredIsland);
         Debug.Log("NPC bilgi verdi ve gitmek istedi�i yeri s�yl�yor.");
 
         // Diyalog sim�lasyonu i�in 1 saniye bekletme eklendi

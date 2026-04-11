@@ -1265,7 +1265,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _allNpcs:
   - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
-  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: c936debbec437ee44ad139d465eee2de, type: 2}
   - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
   - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
   _npcPrefab: {fileID: 2907383642295658896, guid: 72832efbcda01134c82a8221b82fe0eb, type: 3}

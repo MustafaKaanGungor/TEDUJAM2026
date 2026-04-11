@@ -113,10 +113,15 @@ public class WorldUIManager : MonoBehaviour
         speechBubble.SetActive(false);
     }
 
-   public void ShowSpeechBubble(string text)
+   public void ShowSpeechBubble(NpcDialogue npcDialogue)
    {
-      speechtext.text = text;
+      speechtext.text = $"I went to {npcDialogue.direction1} and saw {npcDialogue.islandOnDirection1} then went to {npcDialogue.direction2} and saw {npcDialogue.islandOnDirection2}.";
       speechBubble.SetActive(true);
    }
 
+   public void ShowSecondStageUI(IslandType islandType)
+   {
+       speechtext.text = $"I want to go to {islandType}";
+       secondStageUI.SetActive(true);
+   }
 }

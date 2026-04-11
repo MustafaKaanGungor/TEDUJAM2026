@@ -153,6 +153,19 @@ public class Game : MonoBehaviour
             NpcData data = _allNpcs[0];
             _allNpcs.RemoveAt(0);
 
+            data.Dialogues.direction1 = (Direction) UnityEngine.Random.Range(0, 9);
+            while(true)
+            {
+                Direction secondDirection = (Direction) UnityEngine.Random.Range(0, 9);
+                if(secondDirection != data.Dialogues.direction1)
+                {
+                    break;
+                }
+            }
+
+            //data.Dialogues.islandOnDirection1 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y].type;
+            //data.Dialogues.islandOnDirection2 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x + (int)GetDirectionMovement(data.Dialogues.direction2).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y + (int)GetDirectionMovement(data.Dialogues.direction2).y].type;
+            
             GameObject newNpcObj = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
             newNpcObj.SetActive(false);
 
@@ -161,6 +174,31 @@ public class Game : MonoBehaviour
 
             _currentNpcs.Add(newNpcObj);
             Debug.Log($"Yeni NPC eklendi: {data.name}. Aktif NPC say�s�: {_currentNpcs.Count}");
+        }
+    }
+
+    private Vector2 GetDirectionMovement(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.NORTH:
+                return new Vector2(0, 1);
+            case Direction.NORTHEAST:
+                return new Vector2(-1, 1);
+            case Direction.EAST:
+                return new Vector2(-1, 0);
+            case Direction.SOUTHEAST:
+                return new Vector2(-1, -1);
+            case Direction.SOUTH:
+                return new Vector2(0, -1);
+            case Direction.SOUTHWEST:
+                return new Vector2(1, -1);
+            case Direction.WEST:
+                return new Vector2(1, 0);
+            case Direction.NORTHWEST:
+                return new Vector2(1, 1);
+            default:
+                return new Vector2(0, 0);
         }
     }
 
