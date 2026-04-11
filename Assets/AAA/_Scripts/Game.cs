@@ -1,17 +1,36 @@
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Game : MonoBehaviour
 {
     [SerializeField] private List<NpcData> _allNpcs = new();
-    private List<Npc> _currentNpcs = new();
+    private List<GameObject> _currentNpcs = new();
     private int _currentDay = 0;
     [SerializeField] private GameObject _npcPrefab;
     [SerializeField] private Transform _spawnTransform;
-    private MapGenerator map;
+    [SerializeField] private InputActionReference _action;
+    private bool _canPerform = false;
+    private int _currentNpcIndex = 0;
+    private int _nextNpcIndex = 0;
+    private const int MAX_NPC_COUNT = 3;
+    private void OnEnable()
+    {
+        _action.action.performed += ChangeInputAuthorityToNpc;
+        GameEvents.ChangeInputAuthorityToPlayer += OnChangeInputAuthorityToPlayer;
+    }
+
+
+
+    private void OnDisable()
+    {
+        _action.action.performed -= ChangeInputAuthorityToNpc;
+        GameEvents.ChangeInputAuthorityToPlayer -= OnChangeInputAuthorityToPlayer;
+    }    private MapGenerator map;
     [SerializeField] private NpcData data;
 
     private void Awake() {
@@ -28,13 +47,48 @@ public class Game : MonoBehaviour
     }
     private async Task DayCycleAsync()
     {
-        while (true)
+        Debug.Log($"G�n {_currentDay} ba�lad�. NPC say�s�: {_currentNpcs.Count}");
+
+        // Snapshot al � d�ng� i�inde liste de�i�ecek
+        var todayNpcs = new List<GameObject>(_currentNpcs);
+
+        foreach (var npcObject in todayNpcs)
         {
-            // Simulate day cycle logic here
-            Debug.Log("Day cycle is running...");
-            await Task.Delay(1000); // Simulate time passing
+            npcObject.SetActive(true);
+            Npc npc = npcObject.GetComponent<Npc>();
+
+            // NPC turunu bitirene kadar bekle
+            TaskCompletionSource<bool> tcs = new();
+            Action onFinished = null;
+            onFinished = () =>
+            {
+                npc.OnNpcFinished -= onFinished;
+                tcs.TrySetResult(true);
+            };
+            npc.OnNpcFinished += onFinished;
+            await tcs.Task;
+
+            npcObject.SetActive(false);
+
+            if (npc.IsDead)
+            {
+                Debug.Log($"{npc.name} �ld�. Yar�n yerine yenisi gelecek.");
+                _currentNpcs.Remove(npcObject);
+                Destroy(npcObject);
+            }
+            else
+            {
+                Debug.Log($"{npc.name} sa� ayr�ld�. Yar�n geri gelecek.");
+            }
+
+            await Task.Delay(2000);
         }
+
+        Debug.Log("T�m NPC'ler bitti. G�n sonlan�yor...");
+        DayFinished();
+        DayStarted();
     }
+
 
 
     private void AddNpcToList()
@@ -47,23 +101,69 @@ public class Game : MonoBehaviour
             }
             else
             {
-                var npc = new GameObject($"Npc_{i}").AddComponent<Npc>();
+                var newNpc = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
+                newNpc.SetActive(false);
+                var npc = newNpc.GetComponent<Npc>();
                 npc.Initialize(_allNpcs[i]);
-                _currentNpcs.Add(npc);
-
+                _allNpcs.RemoveAt(i);
+                _currentNpcs.Add(newNpc);
             }
         }
     }
     private void DayStarted()
     {
         _currentDay++;
+        FillNpcSlots();                             // Bo� slotlar� doldur
         GameEvents.DayChanged?.Invoke(_currentDay);
         GameEvents.PlaySound?.Invoke("Morning");
-        GameObject newNpc = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
-        newNpc.GetComponent<Npc>().Initialize(data);
+        _ = DayCycleAsync();
     }
     private void DayFinished()
     {
         GameEvents.PlaySound?.Invoke("Evening");
     }
+    private void ChangeInputAuthorityToNpc(InputAction.CallbackContext context)
+    {
+        if (_canPerform)
+        {
+            _canPerform = false;
+            GameEvents.ChangeInputAuthorityToNpc?.Invoke();
+        }
+
+    }
+    private void OnChangeInputAuthorityToPlayer()
+    {
+        _canPerform = true;
+    }
+    private GameObject GetCurrentNpcFromList()
+    {
+        _currentNpcIndex++;
+        return _currentNpcs[_currentNpcIndex - 1];
+    }
+    private void FillNpcSlots()
+    {
+        int slotsNeeded = MAX_NPC_COUNT - _currentNpcs.Count;
+
+        for (int i = 0; i < slotsNeeded; i++)
+        {
+            if (_allNpcs.Count == 0)
+            {
+                Debug.LogWarning("Eklenecek yeni NPC kalmad�!");
+                break;
+            }
+
+            NpcData data = _allNpcs[0];
+            _allNpcs.RemoveAt(0);
+
+            GameObject newNpcObj = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
+            newNpcObj.SetActive(false);
+
+            Npc npc = newNpcObj.GetComponent<Npc>();
+            npc.Initialize(data);
+
+            _currentNpcs.Add(newNpcObj);
+            Debug.Log($"Yeni NPC eklendi: {data.name}. Aktif NPC say�s�: {_currentNpcs.Count}");
+        }
+    }
+
 }
