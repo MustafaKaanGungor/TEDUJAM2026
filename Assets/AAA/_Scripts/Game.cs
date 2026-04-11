@@ -9,13 +9,15 @@ using UnityEngine.InputSystem;
 public class Game : MonoBehaviour
 {
     [SerializeField] private List<NpcData> _allNpcs = new();
-    private List<Npc> _currentNpcs = new();
+    private List<GameObject> _currentNpcs = new();
     private int _currentDay = 0;
     [SerializeField] private GameObject _npcPrefab;
     [SerializeField] private Transform _spawnTransform;
     [SerializeField] private InputActionReference _action;
     private bool _canPerform = false;
-
+    private int _currentNpcIndex = 0;
+    private int _nextNpcIndex = 0;
+    private const int MAX_NPC_COUNT = 3;
     private void OnEnable()
     {
         _action.action.performed += ChangeInputAuthorityToNpc;
@@ -39,13 +41,48 @@ public class Game : MonoBehaviour
     }
     private async Task DayCycleAsync()
     {
-        while (true)
+        Debug.Log($"Gün {_currentDay} baþladý. NPC sayýsý: {_currentNpcs.Count}");
+
+        // Snapshot al — döngü içinde liste deðiþecek
+        var todayNpcs = new List<GameObject>(_currentNpcs);
+
+        foreach (var npcObject in todayNpcs)
         {
-            // Simulate day cycle logic here
-            Debug.Log("Day cycle is running...");
-            await Task.Delay(1000); // Simulate time passing
+            npcObject.SetActive(true);
+            Npc npc = npcObject.GetComponent<Npc>();
+
+            // NPC turunu bitirene kadar bekle
+            TaskCompletionSource<bool> tcs = new();
+            Action onFinished = null;
+            onFinished = () =>
+            {
+                npc.OnNpcFinished -= onFinished;
+                tcs.TrySetResult(true);
+            };
+            npc.OnNpcFinished += onFinished;
+            await tcs.Task;
+
+            npcObject.SetActive(false);
+
+            if (npc.IsDead)
+            {
+                Debug.Log($"{npc.name} öldü. Yarýn yerine yenisi gelecek.");
+                _currentNpcs.Remove(npcObject);
+                Destroy(npcObject);
+            }
+            else
+            {
+                Debug.Log($"{npc.name} sað ayrýldý. Yarýn geri gelecek.");
+            }
+
+            await Task.Delay(2000);
         }
+
+        Debug.Log("Tüm NPC'ler bitti. Gün sonlanýyor...");
+        DayFinished();
+        DayStarted();
     }
+
 
 
     private void AddNpcToList()
@@ -61,19 +98,19 @@ public class Game : MonoBehaviour
                 var newNpc = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
                 newNpc.SetActive(false);
                 var npc = newNpc.GetComponent<Npc>();
-                //npc.Initialize(_allNpcs[i]);
-                _currentNpcs.Add(npc);
-
+                npc.Initialize(_allNpcs[i]);
+                _allNpcs.RemoveAt(i);
+                _currentNpcs.Add(newNpc);
             }
         }
     }
     private void DayStarted()
     {
         _currentDay++;
-        AddNpcToList();
+        FillNpcSlots();                             // Boþ slotlarý doldur
         GameEvents.DayChanged?.Invoke(_currentDay);
         GameEvents.PlaySound?.Invoke("Morning");
-        //lsiteden 1. npc yi getir
+        _ = DayCycleAsync();
     }
     private void DayFinished()
     {
@@ -92,8 +129,35 @@ public class Game : MonoBehaviour
     {
         _canPerform = true;
     }
-    private void GetCurrentNpcFromList()
+    private GameObject GetCurrentNpcFromList()
     {
-
+        _currentNpcIndex++;
+        return _currentNpcs[_currentNpcIndex - 1];
     }
+    private void FillNpcSlots()
+    {
+        int slotsNeeded = MAX_NPC_COUNT - _currentNpcs.Count;
+
+        for (int i = 0; i < slotsNeeded; i++)
+        {
+            if (_allNpcs.Count == 0)
+            {
+                Debug.LogWarning("Eklenecek yeni NPC kalmadý!");
+                break;
+            }
+
+            NpcData data = _allNpcs[0];
+            _allNpcs.RemoveAt(0);
+
+            GameObject newNpcObj = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
+            newNpcObj.SetActive(false);
+
+            Npc npc = newNpcObj.GetComponent<Npc>();
+            npc.Initialize(data);
+
+            _currentNpcs.Add(newNpcObj);
+            Debug.Log($"Yeni NPC eklendi: {data.name}. Aktif NPC sayýsý: {_currentNpcs.Count}");
+        }
+    }
+
 }

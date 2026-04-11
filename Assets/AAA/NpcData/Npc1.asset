@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Npc1
   m_EditorClassIdentifier: 
   <NpcName>k__BackingField: Npc1
-  <NpcSprite>k__BackingField: {fileID: 0}
+  <NpcSprite>k__BackingField: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}

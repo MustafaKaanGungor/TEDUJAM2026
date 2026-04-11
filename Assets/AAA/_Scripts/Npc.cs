@@ -16,7 +16,8 @@ public class Npc : MonoBehaviour
     [SerializeField] private int _numJumps = 1;
     [SerializeField] private float _duration = 2f;
     [SerializeField] private Vector3 _endTarget;
-
+    public event Action OnNpcFinished;
+    public bool IsDead { get; private set; } = false;
     public void Initialize(NpcData npcData)
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -152,6 +153,12 @@ public class Npc : MonoBehaviour
                _isPerforming = false;
                _canMove = false;
                GameEvents.ChangeInputAuthorityToPlayer?.Invoke();
+               OnNpcFinished?.Invoke();
            });
+    }
+    public void Die()
+    {
+        IsDead = true;
+        OnNpcFinished?.Invoke(); // Ölünce de conversation bitiyor
     }
 }

@@ -227,9 +227,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d119d73e41e3394f9ae67f68ad44d41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _allNpcs: []
+  _allNpcs:
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
+  - {fileID: 11400000, guid: a7e578490616f564f8d04f7eb846f612, type: 2}
   _npcPrefab: {fileID: 2907383642295658896, guid: 72832efbcda01134c82a8221b82fe0eb, type: 3}
   _spawnTransform: {fileID: 1690513476}
+  _action: {fileID: 4600826974248398880, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!4 &381439747
 Transform:
   m_ObjectHideFlags: 0
@@ -637,6 +649,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _actionReferance: {fileID: 1216938012403289501, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  defaultRotation: {x: 0, y: 0, z: 0}
+  mapRotation: {x: 90, y: 0, z: 0}
 --- !u!114 &585400393
 MonoBehaviour:
   m_ObjectHideFlags: 0
