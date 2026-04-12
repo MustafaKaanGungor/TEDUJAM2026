@@ -55,6 +55,43 @@ public class MapGenerator : MonoBehaviour
         }
         //GameEvents.MapGenerated?.Invoke(mapArray);
     }
+
+    public (bool, IslandType, IslandType) ExploreDirections(Direction direction1, Direction direction2)
+    {
+        IslandType island1 = mapArray[2 + (int)GetDirectionMovement(direction1).x, 2 + (int)GetDirectionMovement(direction1).y].type;
+        IslandType island2 = mapArray[2 + (int)GetDirectionMovement(direction1).x + (int)GetDirectionMovement(direction2).x, 2 + (int)GetDirectionMovement(direction1).y + (int)GetDirectionMovement(direction2).y].type;
+        bool isDead = false;
+        if(island1 == IslandType.DANGER1 || island1 == IslandType.DANGER2 || island1 == IslandType.DANGER3 || island2 == IslandType.DANGER1 || island2 == IslandType.DANGER2 || island2 == IslandType.DANGER3)
+        {
+            isDead = true;
+        }
+        return (isDead, island1, island2); 
+    }
+
+    private Vector2 GetDirectionMovement(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.NORTH:
+                return new Vector2(0, 1);
+            case Direction.NORTHEAST:
+                return new Vector2(-1, 1);
+            case Direction.EAST:
+                return new Vector2(-1, 0);
+            case Direction.SOUTHEAST:
+                return new Vector2(-1, -1);
+            case Direction.SOUTH:
+                return new Vector2(0, -1);
+            case Direction.SOUTHWEST:
+                return new Vector2(1, -1);
+            case Direction.WEST:
+                return new Vector2(1, 0);
+            case Direction.NORTHWEST:
+                return new Vector2(1, 1);
+            default:
+                return new Vector2(0, 0);
+        }
+    }
 }
 
 public struct MapNode
