@@ -10,4 +10,7 @@ public static class GameEvents
     public static Action ChangeInputAuthorityToNpc;
     public static Action<MapNode[,]> MapGenerated;
     public static Action<Direction,Direction> PlayerMadeASelection;
+    public static Action NpcDied;
+    public static Action NpcSuccessful;
+    public static Action<int, int, MapNode[,]> GameEnd;
 }
