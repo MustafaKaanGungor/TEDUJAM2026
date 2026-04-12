@@ -8,7 +8,8 @@ using UnityEngine.InputSystem;
 
 public class Game : MonoBehaviour
 {
-    [SerializeField] private List<NpcData> _allNpcs = new();
+    private List<NpcData> _allNpcs => _allNPCS;
+    [SerializeField] private List<NpcData> _allNPCS = new();
     private List<GameObject> _currentNpcs = new();
     private int _currentDay = 0;
     [SerializeField] private GameObject _npcPrefab;
@@ -40,7 +41,7 @@ public class Game : MonoBehaviour
     }
     private void OnMapGenerated(MapNode[,] obj)
     {
-        throw new NotImplementedException();
+        
     }
 
 
@@ -54,7 +55,7 @@ public class Game : MonoBehaviour
     }
     private async Task DayCycleAsync()
     {
-        Debug.Log($"G�n {_currentDay} ba�lad�. NPC say�s�: {_currentNpcs.Count}");
+        //Debug.Log($"G�n {_currentDay} ba�lad�. NPC say�s�: {_currentNpcs.Count}");
 
         // Snapshot al � d�ng� i�inde liste de�i�ecek
         var todayNpcs = new List<GameObject>(_currentNpcs);
@@ -75,7 +76,6 @@ public class Game : MonoBehaviour
             npc.OnNpcFinished += onFinished;
             await tcs.Task;
 
-            npcObject.SetActive(false);
 
             if (npc.IsDead)
             {
@@ -85,11 +85,12 @@ public class Game : MonoBehaviour
             }
             else
             {
-                Debug.Log($"{npc.name} sa� ayr�ld�. Yar�n geri gelecek.");
+                //Debug.Log($"{npc.name} sa� ayr�ld�. Yar�n geri gelecek.");
                 npcObject.transform.position = _spawnTransform.position;
                 //npc nin gittigi yer bilgisi guncellenmeli
                 //gitmek istedigi yer bilgisi guncellenmeli
             }
+            npcObject.SetActive(false);
 
             await Task.Delay(2000);
         }
@@ -165,18 +166,29 @@ public class Game : MonoBehaviour
             NpcData data = _allNpcs[0];
             _allNpcs.RemoveAt(0);
 
-            data.Dialogues.direction1 = (Direction) UnityEngine.Random.Range(0, 9);
-            while(true)
+            data.Dialogues.direction1 = (Direction) UnityEngine.Random.Range(0, 8);
+            while (true)
             {
-                Direction secondDirection = (Direction) UnityEngine.Random.Range(0, 9);
-                if(secondDirection != data.Dialogues.direction1)
+                Direction secondDirection = (Direction)UnityEngine.Random.Range(0, 8);
+                if (secondDirection != data.Dialogues.direction1)
                 {
+                    data.Dialogues.direction2 = secondDirection;
                     break;
                 }
             }
-
-            //data.Dialogues.islandOnDirection1 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y].type;
-            //data.Dialogues.islandOnDirection2 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x + (int)GetDirectionMovement(data.Dialogues.direction2).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y + (int)GetDirectionMovement(data.Dialogues.direction2).y].type;
+            while (true)
+            {
+                int randomX = UnityEngine.Random.Range(0, 5);
+                int randomY = UnityEngine.Random.Range(0, 5);
+                if (randomX == 2 && randomY == 2) continue;
+                data.DesiredIsland = map.mapArray[randomX, randomY].type;
+                break;
+            }
+            Debug.Log(data.Dialogues.direction1);
+            Debug.Log( data.Dialogues.direction2);
+            
+            data.Dialogues.islandOnDirection1 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y].type;
+            data.Dialogues.islandOnDirection2 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x + (int)GetDirectionMovement(data.Dialogues.direction2).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y + (int)GetDirectionMovement(data.Dialogues.direction2).y].type;
             
             GameObject newNpcObj = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
             newNpcObj.SetActive(false);
@@ -185,7 +197,7 @@ public class Game : MonoBehaviour
             npc.Initialize(data,map);
 
             _currentNpcs.Add(newNpcObj);
-            Debug.Log($"Yeni NPC eklendi: {data.name}. Aktif NPC say�s�: {_currentNpcs.Count}");
+            //Debug.Log($"Yeni NPC eklendi: {data.name}. Aktif NPC say�s�: {_currentNpcs.Count}");
         }
     }
 
@@ -194,21 +206,21 @@ public class Game : MonoBehaviour
         switch (direction)
         {
             case Direction.NORTH:
-                return new Vector2(0, 1);
+                return new Vector2(-1, 0);
             case Direction.NORTHEAST:
                 return new Vector2(-1, 1);
             case Direction.EAST:
-                return new Vector2(-1, 0);
+                return new Vector2(0, 1);
             case Direction.SOUTHEAST:
-                return new Vector2(-1, -1);
+                return new Vector2(1, 1);
             case Direction.SOUTH:
-                return new Vector2(0, -1);
+                return new Vector2(1, 0);
             case Direction.SOUTHWEST:
                 return new Vector2(1, -1);
             case Direction.WEST:
-                return new Vector2(1, 0);
+                return new Vector2(0, -1);
             case Direction.NORTHWEST:
-                return new Vector2(1, 1);
+                return new Vector2(-1, -1);
             default:
                 return new Vector2(0, 0);
         }

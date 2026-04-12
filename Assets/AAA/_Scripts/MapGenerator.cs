@@ -11,7 +11,7 @@ public class MapGenerator : MonoBehaviour
         {IslandType.DANGER3, 1}, {IslandType.LANDMARK1, 1}, {IslandType.LANDMARK2, 1}, {IslandType.LANDMARK3, 1}, {IslandType.LANDMARK4, 1} 
     };
 
-    void Start()
+    void Awake()
     {
         for(int i = 0; i < 5; i++)
         {
@@ -73,21 +73,21 @@ public class MapGenerator : MonoBehaviour
         switch (direction)
         {
             case Direction.NORTH:
-                return new Vector2(0, 1);
-            case Direction.NORTHEAST:
-                return new Vector2(-1, 1);
-            case Direction.EAST:
-                return new Vector2(-1, 0);
-            case Direction.SOUTHEAST:
-                return new Vector2(-1, -1);
-            case Direction.SOUTH:
                 return new Vector2(0, -1);
-            case Direction.SOUTHWEST:
+            case Direction.NORTHEAST:
                 return new Vector2(1, -1);
-            case Direction.WEST:
+            case Direction.EAST:
                 return new Vector2(1, 0);
-            case Direction.NORTHWEST:
+            case Direction.SOUTHEAST:
                 return new Vector2(1, 1);
+            case Direction.SOUTH:
+                return new Vector2(0, 1);
+            case Direction.SOUTHWEST:
+                return new Vector2(-1, 1);
+            case Direction.WEST:
+                return new Vector2(-1, 0);
+            case Direction.NORTHWEST:
+                return new Vector2(-1, -1);
             default:
                 return new Vector2(0, 0);
         }

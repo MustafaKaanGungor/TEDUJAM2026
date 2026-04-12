@@ -33,7 +33,7 @@ public class Npc : MonoBehaviour
         _currentStage = Stage.Stage1;
         _isPerforming = false;
         _canMove = true;
-        IsDead = false;
+        //IsDead = false;
 
     }
     private void OnDisable()
@@ -106,7 +106,7 @@ public class Npc : MonoBehaviour
         _isPerforming = true;
 
         WorldUIManager.instance.ShowSpeechBubble(NpcData.Dialogues);
-        Debug.Log("NPC merkeze ula�t� ve bilgi veriyor.");
+        //Debug.Log("NPC merkeze ula�t� ve bilgi veriyor.");
 
         // Diyalog sim�lasyonu i�in 1 saniye bekletme eklendi
         DOVirtual.DelayedCall(1f, () =>
@@ -122,7 +122,7 @@ public class Npc : MonoBehaviour
     {
         _isPerforming = true;
         WorldUIManager.instance.ShowSecondStageUI(NpcData.DesiredIsland);
-        Debug.Log("NPC bilgi verdi ve gitmek istedi�i yeri s�yl�yor.");
+        //Debug.Log("NPC bilgi verdi ve gitmek istedi�i yeri s�yl�yor.");
 
         // Diyalog sim�lasyonu i�in 1 saniye bekletme eklendi
         DOVirtual.DelayedCall(1f, () =>
@@ -146,7 +146,7 @@ public class Npc : MonoBehaviour
             .SetEase(Ease.Linear)
             .OnComplete(() =>
             {
-                Debug.Log("NPC merkeze ula�t� ve durdu.");
+                //Debug.Log("NPC merkeze ula�t� ve durdu.");
                 NextStage();
                 _isPerforming = false; // Animasyon bitti, Update d�ng�s� devam edebilir
                 _canMove = false;
@@ -160,7 +160,6 @@ public class Npc : MonoBehaviour
            .SetEase(Ease.Linear)
            .OnComplete(() =>
            {
-               Debug.Log("NPC hedefe ula�t� ve durdu.");
                // E�er sahnede ba�ka bir a�ama yoksa veya obje yok edilecekse i�lemleri buraya ekle
                _isPerforming = false;
                _canMove = false;
@@ -175,8 +174,20 @@ public class Npc : MonoBehaviour
         OnNpcFinished?.Invoke(); // �l�nce de conversation bitiyor
     }
     //oyuncu secim yapinca event ile bu fonksiyonu cagir
-    private void OnCheckPlayerChoice(Direction direction1,Direction direction2)
+    private void OnCheckPlayerChoice(Direction direction1, Direction direction2)
     {
-        
+        var (isDead, island1, island2) = _map.ExploreDirections(direction1, direction2);
+        if (isDead)
+        {
+            IsDead = true;
+        }
+        else
+        {
+            NpcData.Dialogues.islandOnDirection1 = island1;
+            NpcData.Dialogues.islandOnDirection2 = island2;
+            NpcData.Dialogues.direction1 = direction1;
+            NpcData.Dialogues.direction2 = direction2;
+            return;
+        }
     }
 }

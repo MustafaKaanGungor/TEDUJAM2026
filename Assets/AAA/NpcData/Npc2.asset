@@ -15,8 +15,8 @@ MonoBehaviour:
   <NpcName>k__BackingField: Npc2
   <NpcSprite>k__BackingField: {fileID: 21300000, guid: 5cddc178853c5274cbed5e893c6fb5d1, type: 3}
   <Dialogues>k__BackingField:
-    direction1: 2
-    islandOnDirection1: 8
+    direction1: 0
+    islandOnDirection1: 0
     direction2: 0
-    islandOnDirection2: 11
+    islandOnDirection2: 7
   <DesiredIsland>k__BackingField: 3

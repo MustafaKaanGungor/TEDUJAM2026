@@ -7,8 +7,8 @@ public class NpcData : ScriptableObject
     [field: SerializeField] public string NpcName { get; private set; }
     [field: SerializeField] public Sprite NpcSprite { get; private set; }
     [field: SerializeField] public NpcDialogue Dialogues { get; private set; } = new NpcDialogue();
-    [field: SerializeField] public IslandType DesiredIsland { get; private set; }
-    [HideInInspector] public NpcState State { get; set; } = NpcState.alive;
+    [field: SerializeField] public IslandType DesiredIsland { get; set; }
+    //[HideInInspector] public NpcState State { get; set; } = NpcState.alive;
     
     public enum NpcState
     {

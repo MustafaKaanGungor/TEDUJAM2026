@@ -56,7 +56,7 @@ public class WorldUIManager : MonoBehaviour
             speechBubble.SetActive(false); 
             firstStageContinueButton.gameObject.SetActive(true);
             secondStageUI.SetActive(false);
-            //
+            GameEvents.PlayerMadeASelection?.Invoke(firstDirection, secondDirection);
             GameEvents.ChangeInputAuthorityToNpc?.Invoke();
         });
 
@@ -129,7 +129,7 @@ public class WorldUIManager : MonoBehaviour
            secondDirectionText.text = "Northwest"; 
             secondDirection = Direction.NORTHWEST;
         });
-        GameEvents.PlayerMadeASelection?.Invoke(firstDirection, secondDirection);
+      
         secondStageUI.SetActive(false);
         speechBubble.SetActive(false);
     }
