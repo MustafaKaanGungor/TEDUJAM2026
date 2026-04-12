@@ -8,4 +8,6 @@ public static class GameEvents
     public static Action<int> DayChanged;
     public static Action ChangeInputAuthorityToPlayer; 
     public static Action ChangeInputAuthorityToNpc;
+    public static Action<MapNode[,]> MapGenerated;
+    public static Action<Direction,Direction> PlayerMadeASelection;
 }

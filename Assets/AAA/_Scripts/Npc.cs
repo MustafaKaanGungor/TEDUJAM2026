@@ -17,21 +17,30 @@ public class Npc : MonoBehaviour
     [SerializeField] private float _duration = 2f;
     [SerializeField] private Vector3 _endTarget;
     public event Action OnNpcFinished;
+    private MapNode[,] _map;
     public bool IsDead { get; private set; } = false;
-    public void Initialize(NpcData npcData)
+    public void Initialize(NpcData npcData, MapNode[,] mapNodes)
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         NpcData = npcData;
         _spriteRenderer.sprite = NpcData.NpcSprite;
+        _map = mapNodes;
     }
     private void OnEnable()
     {
         GameEvents.ChangeInputAuthorityToNpc += OnChangeInputAuthorityToNpc;
+        GameEvents.PlayerMadeASelection += OnCheckPlayerChoice;
+        _currentStage = Stage.Stage1;
+        _isPerforming = false;
+        _canMove = true;
+        IsDead = false;
 
     }
     private void OnDisable()
     {
         GameEvents.ChangeInputAuthorityToNpc -= OnChangeInputAuthorityToNpc;
+        GameEvents.PlayerMadeASelection -= OnCheckPlayerChoice;
+
     }
 
     private void OnChangeInputAuthorityToNpc()
@@ -157,11 +166,17 @@ public class Npc : MonoBehaviour
                _canMove = false;
                GameEvents.ChangeInputAuthorityToNpc?.Invoke();
                OnNpcFinished?.Invoke();
+               //this.gameObject.SetActive(false);
            });
     }
     public void Die()
     {
         IsDead = true;
         OnNpcFinished?.Invoke(); // �l�nce de conversation bitiyor
+    }
+    //oyuncu secim yapinca event ile bu fonksiyonu cagir
+    private void OnCheckPlayerChoice(Direction direction1,Direction direction2)
+    {
+        
     }
 }

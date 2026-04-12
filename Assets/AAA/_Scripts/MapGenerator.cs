@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    public MapNode[,] mapArray = new MapNode[5,5];
+    [HideInInspector]public MapNode[,] mapArray = new MapNode[5,5];
     private Dictionary<IslandType, int> islandTypeAmounts = new Dictionary<IslandType, int>
     {
         {IslandType.EMPTY, 8}, {IslandType.ISLAND1, 1}, {IslandType.ISLAND2, 1}, {IslandType.ISLAND3, 1},
@@ -53,6 +53,7 @@ public class MapGenerator : MonoBehaviour
                 Debug.Log(i + ", " + j + ", "+ mapArray[i,j].type);           
             }
         }
+        //GameEvents.MapGenerated?.Invoke(mapArray);
     }
 }
 

@@ -19,21 +19,30 @@ public class Game : MonoBehaviour
     private int _nextNpcIndex = 0;
     private const int MAX_NPC_COUNT = 3;
     private MapGenerator map;
+    private MapNode[,] _map;
     private void OnEnable()
     {
         _action.action.performed += ChangeInputAuthorityToNpc;
         GameEvents.ChangeInputAuthorityToPlayer += OnChangeInputAuthorityToPlayer;
+        GameEvents.MapGenerated += OnMapGenerated;
     }
 
     private void OnDisable()
     {
         _action.action.performed -= ChangeInputAuthorityToNpc;
         GameEvents.ChangeInputAuthorityToPlayer -= OnChangeInputAuthorityToPlayer;
-    }    
-    
+        GameEvents.MapGenerated -= OnMapGenerated;
+
+    }
+
     private void Awake() {
         map = GetComponent<MapGenerator>();
     }
+    private void OnMapGenerated(MapNode[,] obj)
+    {
+        throw new NotImplementedException();
+    }
+
 
     private void Start()
     {
@@ -77,6 +86,9 @@ public class Game : MonoBehaviour
             else
             {
                 Debug.Log($"{npc.name} sa� ayr�ld�. Yar�n geri gelecek.");
+                npcObject.transform.position = _spawnTransform.position;
+                //npc nin gittigi yer bilgisi guncellenmeli
+                //gitmek istedigi yer bilgisi guncellenmeli
             }
 
             await Task.Delay(2000);
@@ -89,25 +101,25 @@ public class Game : MonoBehaviour
 
 
 
-    private void AddNpcToList()
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            if (_currentNpcs[i] != null)
-            {
-                continue;
-            }
-            else
-            {
-                var newNpc = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
-                newNpc.SetActive(false);
-                var npc = newNpc.GetComponent<Npc>();
-                npc.Initialize(_allNpcs[i]);
-                _allNpcs.RemoveAt(i);
-                _currentNpcs.Add(newNpc);
-            }
-        }
-    }
+    //private void AddNpcToList()
+    //{
+    //    for (int i = 0; i < 3; i++)
+    //    {
+    //        if (_currentNpcs[i] != null)
+    //        {
+    //            continue;
+    //        }
+    //        else
+    //        {
+    //            var newNpc = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
+    //            newNpc.SetActive(false);
+    //            var npc = newNpc.GetComponent<Npc>();
+    //            npc.Initialize(_allNpcs[i]);
+    //            _allNpcs.RemoveAt(i);
+    //            _currentNpcs.Add(newNpc);
+    //        }
+    //    }
+    //}
     private void DayStarted()
     {
         _currentDay++;
@@ -170,7 +182,7 @@ public class Game : MonoBehaviour
             newNpcObj.SetActive(false);
 
             Npc npc = newNpcObj.GetComponent<Npc>();
-            npc.Initialize(data);
+            npc.Initialize(data,map.mapArray);
 
             _currentNpcs.Add(newNpcObj);
             Debug.Log($"Yeni NPC eklendi: {data.name}. Aktif NPC say�s�: {_currentNpcs.Count}");

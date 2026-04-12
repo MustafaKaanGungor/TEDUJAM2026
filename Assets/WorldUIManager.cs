@@ -9,6 +9,7 @@ public class WorldUIManager : MonoBehaviour
     [SerializeField] private TMP_Text speechtext;
     [SerializeField] private Button firstStageContinueButton;
     [SerializeField] private GameObject secondStageUI;
+    //neden liste yapmadin aaaaaaaaaaa
     [SerializeField] private Button secondStageContinueButton;
     [SerializeField] private Button firstDirection1;
     [SerializeField] private Button firstDirection2;
@@ -28,6 +29,9 @@ public class WorldUIManager : MonoBehaviour
     [SerializeField] private Button secondDirection8;
     [SerializeField] private TMP_Text firstDirectionText;
     [SerializeField] private TMP_Text secondDirectionText;
+
+    private Direction firstDirection;
+    private Direction secondDirection;
 
     private void Awake() {
         
@@ -52,63 +56,80 @@ public class WorldUIManager : MonoBehaviour
             speechBubble.SetActive(false); 
             firstStageContinueButton.gameObject.SetActive(true);
             secondStageUI.SetActive(false);
+            //
             GameEvents.ChangeInputAuthorityToNpc?.Invoke();
         });
 
         firstDirection1.onClick.AddListener(() =>
         {
-           firstDirectionText.text = "North"; 
+           firstDirectionText.text = "North";
+            firstDirection = Direction.NORTH;
         });
         firstDirection2.onClick.AddListener(() =>
         {
            firstDirectionText.text = "Northeast"; 
+            firstDirection = Direction.NORTHEAST;
         });firstDirection3.onClick.AddListener(() =>
         {
            firstDirectionText.text = "East"; 
+            firstDirection = Direction.EAST;
         });firstDirection4.onClick.AddListener(() =>
         {
            firstDirectionText.text = "Southeast"; 
+            firstDirection = Direction.SOUTHEAST;
         });firstDirection5.onClick.AddListener(() =>
         {
            firstDirectionText.text = "South"; 
+            firstDirection = Direction.SOUTH;
         });firstDirection6.onClick.AddListener(() =>
         {
            firstDirectionText.text = "Southwest"; 
+            firstDirection = Direction.SOUTHWEST;
         });firstDirection7.onClick.AddListener(() =>
         {
            firstDirectionText.text = "West"; 
+            firstDirection = Direction.WEST;
         });firstDirection8.onClick.AddListener(() =>
         {
            firstDirectionText.text = "Northwest"; 
+            firstDirection = Direction.NORTHWEST;
         });
 
         secondDirection1.onClick.AddListener(() =>
         {
-           secondDirectionText.text = "North"; 
+           secondDirectionText.text = "North";
+            secondDirection = Direction.NORTH;
         });
         secondDirection2.onClick.AddListener(() =>
         {
            secondDirectionText.text = "Northeast"; 
+            secondDirection = Direction.NORTH;
         });secondDirection3.onClick.AddListener(() =>
         {
            secondDirectionText.text = "East"; 
+            secondDirection = Direction.EAST;
         });secondDirection4.onClick.AddListener(() =>
         {
            secondDirectionText.text = "Southeast"; 
+            secondDirection = Direction.SOUTHEAST;
         });secondDirection5.onClick.AddListener(() =>
         {
            secondDirectionText.text = "South"; 
+            secondDirection = Direction.SOUTH;
         });secondDirection6.onClick.AddListener(() =>
         {
            secondDirectionText.text = "Southwest"; 
+            secondDirection = Direction.SOUTHWEST;
         });secondDirection7.onClick.AddListener(() =>
         {
            secondDirectionText.text = "West"; 
+            secondDirection = Direction.WEST;
         });secondDirection8.onClick.AddListener(() =>
         {
            secondDirectionText.text = "Northwest"; 
+            secondDirection = Direction.NORTHWEST;
         });
-
+        GameEvents.PlayerMadeASelection?.Invoke(firstDirection, secondDirection);
         secondStageUI.SetActive(false);
         speechBubble.SetActive(false);
     }
