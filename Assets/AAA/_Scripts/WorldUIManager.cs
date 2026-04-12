@@ -136,13 +136,50 @@ public class WorldUIManager : MonoBehaviour
 
    public void ShowSpeechBubble(NpcDialogue npcDialogue)
    {
-      speechtext.text = $"I went to {npcDialogue.direction1} and saw {npcDialogue.islandOnDirection1} then went to {npcDialogue.direction2} and saw {npcDialogue.islandOnDirection2}.";
+      speechtext.text = $"I went to {npcDialogue.direction1} and saw {IslandTypeStringazer(npcDialogue.islandOnDirection1)} then went to {npcDialogue.direction2} and saw {IslandTypeStringazer(npcDialogue.islandOnDirection2)}.";
       speechBubble.SetActive(true);
    }
 
    public void ShowSecondStageUI(IslandType islandType)
    {
-       speechtext.text = $"I want to go to {islandType}";
+       speechtext.text = $"I want to go to {IslandTypeStringazer(islandType)}";
        secondStageUI.SetActive(true);
    }
+
+   private string IslandTypeStringazer(IslandType type) 
+    {
+        switch (type)
+        {
+            case IslandType.EMPTY:
+                return "nothing";
+            case IslandType.ISLAND1:
+                return "Drake’s Lookout island";
+            case IslandType.ISLAND2:
+                return "Merchant’s Rest island";
+            case IslandType.ISLAND3:
+                return "Resolution Reach island";
+            case IslandType.ISLAND4:
+                return "Northumberland Skerry island";
+            case IslandType.ISLAND5:
+                return "Emerald Atoll island";
+            case IslandType.ISLAND6:
+                return "Anson’s Key island";
+            case IslandType.DANGER1:
+                return "dangerous sharks";
+            case IslandType.DANGER2:
+                return "dangerous pirates";
+            case IslandType.DANGER3:
+                return "a dangerous kraken";
+            case IslandType.LANDMARK1:
+                return "a landmark with a big tree";
+            case IslandType.LANDMARK2:
+                return "a landmark with a big rock";
+            case IslandType.LANDMARK3:
+                return "a landmark with a big shipwreck";
+            case IslandType.LANDMARK4:
+                return "a landmark with a big treasure chest";
+            default:
+                return type.ToString();
+        }
+    }
 }
