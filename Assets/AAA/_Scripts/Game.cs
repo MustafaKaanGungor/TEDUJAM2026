@@ -20,6 +20,7 @@ public class Game : MonoBehaviour
     private int _nextNpcIndex = 0;
     private const int MAX_NPC_COUNT = 3;
     private MapGenerator map;
+    private StatTracker _statTracker;
     //private MapNode[,] _map;
     private void OnEnable()
     {
@@ -38,6 +39,7 @@ public class Game : MonoBehaviour
 
     private void Awake() {
         map = GetComponent<MapGenerator>();
+        _statTracker = new StatTracker();
     }
     private void OnMapGenerated(MapNode[,] obj)
     {
@@ -48,6 +50,7 @@ public class Game : MonoBehaviour
     private void Start()
     {
         DayStarted();
+        
     }
     private async void StartDayCycle()
     {
@@ -97,41 +100,26 @@ public class Game : MonoBehaviour
 
         Debug.Log("T�m NPC'ler bitti. G�n sonlan�yor...");
         DayFinished();
+
         DayStarted();
     }
-
-
-
-    //private void AddNpcToList()
-    //{
-    //    for (int i = 0; i < 3; i++)
-    //    {
-    //        if (_currentNpcs[i] != null)
-    //        {
-    //            continue;
-    //        }
-    //        else
-    //        {
-    //            var newNpc = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
-    //            newNpc.SetActive(false);
-    //            var npc = newNpc.GetComponent<Npc>();
-    //            npc.Initialize(_allNpcs[i]);
-    //            _allNpcs.RemoveAt(i);
-    //            _currentNpcs.Add(newNpc);
-    //        }
-    //    }
-    //}
     private void DayStarted()
     {
         _currentDay++;
         FillNpcSlots();                             // Bo� slotlar� doldur
         GameEvents.DayChanged?.Invoke(_currentDay);
-        GameEvents.PlaySound?.Invoke("Morning");
+        GameEvents.PlaySound?.Invoke("Cock");
+        if (_currentDay == 7) 
+        {
+            var (arg1,arg2) = _statTracker.GetStats();
+            GameEvents.GameEnd?.Invoke(arg1,arg2,map.mapArray);
+            return;
+        }
         _ = DayCycleAsync();
     }
     private void DayFinished()
     {
-        GameEvents.PlaySound?.Invoke("Evening");
+        //GameEvents.PlaySound?.Invoke("");
     }
     private void ChangeInputAuthorityToNpc(InputAction.CallbackContext context)
     {

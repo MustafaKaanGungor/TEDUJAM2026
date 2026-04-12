@@ -99,6 +99,7 @@ public class Npc : MonoBehaviour
     {
         _isPerforming = true;
         MoveToCenter();
+        GameEvents.PlaySound("Footstep");
     }
 
     private void PerformStage2()
@@ -137,6 +138,7 @@ public class Npc : MonoBehaviour
     private void PerformStage4()
     {
         _isPerforming = true;
+        GameEvents.PlaySound("Footstep");
         MoveToEnd();
     }
 
@@ -152,6 +154,7 @@ public class Npc : MonoBehaviour
                 _canMove = false;
                 GameEvents.ChangeInputAuthorityToNpc?.Invoke();
             });
+
     }
 
     private void MoveToEnd()
