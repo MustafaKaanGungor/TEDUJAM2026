@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Npc2
   m_EditorClassIdentifier: 
   <NpcName>k__BackingField: Npc2
-  <NpcSprite>k__BackingField: {fileID: 21300000, guid: 5cddc178853c5274cbed5e893c6fb5d1, type: 3}
+  <NpcSprite>k__BackingField: {fileID: 1140522721, guid: 06433214a119e5a44b9573fb45b19e59, type: 3}
   <Dialogues>k__BackingField:
     direction1: 0
     islandOnDirection1: 0

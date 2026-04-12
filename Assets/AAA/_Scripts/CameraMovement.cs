@@ -22,8 +22,6 @@ public class CameraMovement : MonoBehaviour
         _inputActions.FindAction("CameraDown").performed += OnMoveDown;
         _actionReferance.action.performed += OnMove;
     }
-
-
     private void OnDisable()
     {
         _inputActions.FindAction("CameraUp").performed -= OnMoveUp;
