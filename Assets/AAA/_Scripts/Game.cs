@@ -19,7 +19,7 @@ public class Game : MonoBehaviour
     private int _nextNpcIndex = 0;
     private const int MAX_NPC_COUNT = 3;
     private MapGenerator map;
-    private MapNode[,] _map;
+    //private MapNode[,] _map;
     private void OnEnable()
     {
         _action.action.performed += ChangeInputAuthorityToNpc;
@@ -182,7 +182,7 @@ public class Game : MonoBehaviour
             newNpcObj.SetActive(false);
 
             Npc npc = newNpcObj.GetComponent<Npc>();
-            npc.Initialize(data,map.mapArray);
+            npc.Initialize(data,map);
 
             _currentNpcs.Add(newNpcObj);
             Debug.Log($"Yeni NPC eklendi: {data.name}. Aktif NPC say�s�: {_currentNpcs.Count}");

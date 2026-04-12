@@ -17,9 +17,9 @@ public class Npc : MonoBehaviour
     [SerializeField] private float _duration = 2f;
     [SerializeField] private Vector3 _endTarget;
     public event Action OnNpcFinished;
-    private MapNode[,] _map;
+    private MapGenerator _map;
     public bool IsDead { get; private set; } = false;
-    public void Initialize(NpcData npcData, MapNode[,] mapNodes)
+    public void Initialize(NpcData npcData, MapGenerator mapNodes)
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         NpcData = npcData;
