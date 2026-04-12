@@ -45,7 +45,7 @@ public class UIManager : MonoBehaviour
     {
         // Update the UI with the new day value
         _dayText.text = $"Day: {day}";
-        GameEvents.PlaySound?.Invoke("Morning");
+        //GameEvents.PlaySound?.Invoke("Morning");
     }
 
     private void OnGameEnd(int arg1, int arg2, MapNode[,] map)

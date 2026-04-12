@@ -49,6 +49,7 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
+        GameEvents.PlaySound("Ost");
         DayStarted();
         
     }
@@ -164,14 +165,13 @@ public class Game : MonoBehaviour
                     break;
                 }
             }
-            while (true)
-            {
-                int randomX = UnityEngine.Random.Range(0, 5);
-                int randomY = UnityEngine.Random.Range(0, 5);
-                if (randomX == 2 && randomY == 2) continue;
-                data.DesiredIsland = map.mapArray[randomX, randomY].type;
-                break;
-            }
+            List<MapNode> islands = new List<MapNode>();
+            for (int x = 0; x < 5; x++)
+                for (int y = 0; y < 5; y++)
+                    if (map.mapArray[x, y].type >= IslandType.ISLAND1 && map.mapArray[x, y].type <= IslandType.ISLAND6)
+                        islands.Add(map.mapArray[x, y]);
+
+            data.DesiredIsland = islands[UnityEngine.Random.Range(0, islands.Count)].type;
             Debug.Log(data.Dialogues.direction1);
             Debug.Log( data.Dialogues.direction2);
             
