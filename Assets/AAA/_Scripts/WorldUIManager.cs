@@ -178,6 +178,8 @@ public class WorldUIManager : MonoBehaviour
                 return "a landmark with a big shipwreck";
             case IslandType.LANDMARK4:
                 return "a landmark with a big treasure chest";
+            case IslandType.BASE:
+                return "the your island";
             default:
                 return type.ToString();
         }
