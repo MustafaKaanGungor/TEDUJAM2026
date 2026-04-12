@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe00b4caf29dbfc449f94685f37401fd, type: 3}
-  m_Name: Npc1 1
+  m_Name: Npc2 14
   m_EditorClassIdentifier: 
-  <NpcName>k__BackingField: Npc1
-  <NpcSprite>k__BackingField: {fileID: 956656208, guid: 5cc6ce5061c48084eb9f3826371a5c01, type: 3}
+  <NpcName>k__BackingField: Npc2
+  <NpcSprite>k__BackingField: {fileID: -665575687, guid: 2f82a8c4af7cc604f942bc906ed6fce3, type: 3}
   <Dialogues>k__BackingField:
-    direction1: 7
-    islandOnDirection1: 0
-    direction2: 6
-    islandOnDirection2: 0
-  <DesiredIsland>k__BackingField: 0
+    direction1: 3
+    islandOnDirection1: 8
+    direction2: 0
+    islandOnDirection2: 11
+  <DesiredIsland>k__BackingField: 3
