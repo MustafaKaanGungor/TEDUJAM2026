@@ -8,7 +8,7 @@ public class Npc : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private Stage _currentStage;
     private bool _isPerforming = true;
-    private bool _canMove = true;
+    private bool _canMove = false;
     [Header("Jump Settings")]
     //[SerializeField] private Vector3 _spawnTransform;
     [SerializeField] private Vector3 _centerTarget;
@@ -30,9 +30,9 @@ public class Npc : MonoBehaviour
     {
         GameEvents.ChangeInputAuthorityToNpc += OnChangeInputAuthorityToNpc;
         GameEvents.PlayerMadeASelection += OnCheckPlayerChoice;
-        _currentStage = Stage.Stage1;
         _isPerforming = false;
         _canMove = true;
+        _currentStage = Stage.Stage1;
         //IsDead = false;
 
     }
@@ -40,17 +40,13 @@ public class Npc : MonoBehaviour
     {
         GameEvents.ChangeInputAuthorityToNpc -= OnChangeInputAuthorityToNpc;
         GameEvents.PlayerMadeASelection -= OnCheckPlayerChoice;
-
+        _isPerforming = false;
+        _canMove = false;
     }
 
     private void OnChangeInputAuthorityToNpc()
     {
         _canMove = true;
-    }
-
-    void Start()
-    {
-        _isPerforming = false;
     }
 
     private void Update()
@@ -109,7 +105,7 @@ public class Npc : MonoBehaviour
         WorldUIManager.instance.ShowSpeechBubble(NpcData.Dialogues);
         //Debug.Log("NPC merkeze ula�t� ve bilgi veriyor.");
 
-        // Diyalog sim�lasyonu i�in 1 saniye bekletme eklendi
+        
         DOVirtual.DelayedCall(1f, () =>
         {
             NextStage();
@@ -123,16 +119,11 @@ public class Npc : MonoBehaviour
     {
         _isPerforming = true;
         WorldUIManager.instance.ShowSecondStageUI(NpcData.DesiredIsland);
-        //Debug.Log("NPC bilgi verdi ve gitmek istedi�i yeri s�yl�yor.");
 
-        // Diyalog sim�lasyonu i�in 1 saniye bekletme eklendi
-        DOVirtual.DelayedCall(1f, () =>
-        {
-            NextStage();
-            _isPerforming = false;
-            _canMove = false;
-            GameEvents.ChangeInputAuthorityToPlayer?.Invoke();
-        });
+        NextStage();
+        _isPerforming = false;
+        _canMove = false;
+        GameEvents.ChangeInputAuthorityToPlayer?.Invoke();
     }
 
     private void PerformStage4()
@@ -174,7 +165,6 @@ public class Npc : MonoBehaviour
     public void Die()
     {
         IsDead = true;
-        OnNpcFinished?.Invoke(); // �l�nce de conversation bitiyor
     }
     //oyuncu secim yapinca event ile bu fonksiyonu cagir
     private void OnCheckPlayerChoice(Direction direction1, Direction direction2)
@@ -182,17 +172,16 @@ public class Npc : MonoBehaviour
         var (isDead, island1, island2) = _map.ExploreDirections(direction1, direction2);
         if (isDead)
         {
-            IsDead = true;
+            Die();
             GameEvents.NpcDied?.Invoke();
         }
         else
         {
             NpcData.Dialogues.islandOnDirection1 = island1;
             NpcData.Dialogues.islandOnDirection2 = island2;
-            NpcData.LastVisitedIsland = island1;
+            NpcData.LastVisitedIsland = island2;
             NpcData.Dialogues.direction1 = direction1;
             NpcData.Dialogues.direction2 = direction2;
-            return;
         }
     }
 }
