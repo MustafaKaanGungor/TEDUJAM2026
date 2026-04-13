@@ -91,8 +91,15 @@ public class Game : MonoBehaviour
             {
                 //Debug.Log($"{npc.name} sa� ayr�ld�. Yar�n geri gelecek.");
                 npcObject.transform.position = _spawnTransform.position;
-                //npc nin gittigi yer bilgisi guncellenmeli
-                //gitmek istedigi yer bilgisi guncellenmeli
+                if(npc.NpcData.LastVisitedIsland == npc.NpcData.DesiredIsland)
+                {
+                    npc.NpcData.DesiredIsland = GetDesiredIsland(npc.NpcData.DesiredIsland);
+                }
+                else
+                {
+                    npc.NpcData.DesiredIsland = npc.NpcData.DesiredIsland;
+                }
+
             }
             npcObject.SetActive(false);
 
@@ -165,13 +172,9 @@ public class Game : MonoBehaviour
                     break;
                 }
             }
-            List<MapNode> islands = new List<MapNode>();
-            for (int x = 0; x < 5; x++)
-                for (int y = 0; y < 5; y++)
-                    if (map.mapArray[x, y].type >= IslandType.ISLAND1 && map.mapArray[x, y].type <= IslandType.ISLAND6)
-                        islands.Add(map.mapArray[x, y]);
 
-            data.DesiredIsland = islands[UnityEngine.Random.Range(0, islands.Count)].type;
+
+            data.DesiredIsland = GetDesiredIsland();
             Debug.Log(data.Dialogues.direction1);
             Debug.Log( data.Dialogues.direction2);
             
@@ -214,4 +217,47 @@ public class Game : MonoBehaviour
         }
     }
 
+    //private IslandType GetDesiredIsland(IslandType island = default )
+    //{
+    //    List<MapNode> islands = new List<MapNode>();
+    //    IslandType desiredIsland;
+    //    for (int x = 0; x < 5; x++)
+    //        for (int y = 0; y < 5; y++)
+    //            if (map.mapArray[x, y].type >= IslandType.ISLAND1 && map.mapArray[x, y].type <= IslandType.ISLAND6)
+    //                islands.Add(map.mapArray[x, y]);
+    //    while (true)
+    //    {
+    //        desiredIsland = islands[UnityEngine.Random.Range(0, islands.Count)].type;
+    //        if (desiredIsland != island)
+    //        {
+    //            break;
+    //        }
+    //    }
+
+    //    return desiredIsland;
+    //}
+    private IslandType GetDesiredIsland(IslandType islandToAvoid = default)
+    {
+        List<IslandType> availableIslands = new List<IslandType>();
+
+        for (int x = 0; x < 5; x++)
+        {
+            for (int y = 0; y < 5; y++)
+            {
+                IslandType currentType = map.mapArray[x, y].type;
+                if (currentType >= IslandType.ISLAND1 && currentType <= IslandType.ISLAND6)
+                {
+                    if (currentType != islandToAvoid)
+                    {
+                        availableIslands.Add(currentType);
+                    }
+                }
+            }
+        }
+        if (availableIslands.Count == 0)
+        {
+            return default; 
+        }
+        return availableIslands[UnityEngine.Random.Range(0, availableIslands.Count)];
+    }
 }

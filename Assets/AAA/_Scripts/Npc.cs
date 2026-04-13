@@ -188,6 +188,7 @@ public class Npc : MonoBehaviour
         {
             NpcData.Dialogues.islandOnDirection1 = island1;
             NpcData.Dialogues.islandOnDirection2 = island2;
+            NpcData.LastVisitedIsland = island1;
             NpcData.Dialogues.direction1 = direction1;
             NpcData.Dialogues.direction2 = direction2;
             return;
