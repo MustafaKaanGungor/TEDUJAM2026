@@ -73,19 +73,19 @@ public class MapGenerator : MonoBehaviour
         switch (direction)
         {
             case Direction.NORTH:
-                return new Vector2(0, -1);
+                return new Vector2(-1, 0);
             case Direction.NORTHEAST:
-                return new Vector2(1, -1);
+                return new Vector2(-1, 1);
             case Direction.EAST:
-                return new Vector2(1, 0);
+                return new Vector2(0, 1);
             case Direction.SOUTHEAST:
                 return new Vector2(1, 1);
             case Direction.SOUTH:
-                return new Vector2(0, 1);
+                return new Vector2(1, 0);
             case Direction.SOUTHWEST:
-                return new Vector2(-1, 1);
+                return new Vector2(1, -1);
             case Direction.WEST:
-                return new Vector2(-1, 0);
+                return new Vector2(0, -1);
             case Direction.NORTHWEST:
                 return new Vector2(-1, -1);
             default:
