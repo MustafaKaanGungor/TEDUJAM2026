@@ -136,13 +136,13 @@ public class WorldUIManager : MonoBehaviour
 
    public void ShowSpeechBubble(NpcDialogue npcDialogue)
    {
-      speechtext.text = $"I went to {npcDialogue.direction1} and saw {IslandTypeStringazer(npcDialogue.islandOnDirection1)} then went to {npcDialogue.direction2} and saw {IslandTypeStringazer(npcDialogue.islandOnDirection2)}.";
+      speechtext.text = @$"I went to <color=""blue"">{npcDialogue.direction1}</color> and saw <color=""green"">{IslandTypeStringazer(npcDialogue.islandOnDirection1)}</color> then went to <color=""blue"">{npcDialogue.direction2}</color> and saw <color=""green"">{IslandTypeStringazer(npcDialogue.islandOnDirection2)}</color>.";
       speechBubble.SetActive(true);
    }
 
    public void ShowSecondStageUI(IslandType islandType)
    {
-       speechtext.text = $"I want to go to {IslandTypeStringazer(islandType)}";
+       speechtext.text = @$"I want to go to <color=""green"">{IslandTypeStringazer(islandType)}</color>";
        secondStageUI.SetActive(true);
    }
 
