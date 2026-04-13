@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,6 +22,7 @@ public class Game : MonoBehaviour
     private const int MAX_NPC_COUNT = 3;
     private MapGenerator map;
     private StatTracker _statTracker;
+    private static System.Random rng = new System.Random();
     //private MapNode[,] _map;
     private void OnEnable()
     {
@@ -40,6 +42,8 @@ public class Game : MonoBehaviour
     private void Awake() {
         map = GetComponent<MapGenerator>();
         _statTracker = new StatTracker();
+        var shuffledNpcs = _allNpcs.OrderBy(a => rng.Next()).ToList();
+        _allNPCS = shuffledNpcs;
     }
     private void OnMapGenerated(MapNode[,] obj)
     {
