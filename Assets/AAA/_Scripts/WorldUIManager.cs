@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,7 +30,6 @@ public class WorldUIManager : MonoBehaviour
     [SerializeField] private Button secondDirection8;
     [SerializeField] private TMP_Text firstDirectionText;
     [SerializeField] private TMP_Text secondDirectionText;
-
     private Direction firstDirection;
     private Direction secondDirection;
 
@@ -133,8 +133,34 @@ public class WorldUIManager : MonoBehaviour
         secondStageUI.SetActive(false);
         speechBubble.SetActive(false);
     }
+    private void OnEnable()
+    {
+        secondStageContinueButton.interactable = false;
+        GameEvents.ChangeInputAuthorityToPlayer += OnInputAuthorityChangedToPlayer;
+        GameEvents.ChangeInputAuthorityToNpc += OnInputAuthorityChangedToNpc;
+    }
+    private void OnDisable()
+    {
+        secondStageContinueButton.interactable = false;
+        GameEvents.ChangeInputAuthorityToPlayer -= OnInputAuthorityChangedToPlayer;
+        GameEvents.ChangeInputAuthorityToNpc -= OnInputAuthorityChangedToNpc;
+    }
 
-   public void ShowSpeechBubble(NpcDialogue npcDialogue)
+    private void OnInputAuthorityChangedToNpc()
+    {
+        secondStageContinueButton.interactable = false;
+        firstStageContinueButton.interactable = false;
+
+    }
+
+    private void OnInputAuthorityChangedToPlayer()
+    {
+        secondStageContinueButton.interactable = true;
+        firstStageContinueButton.interactable = true;
+
+    }
+
+    public void ShowSpeechBubble(NpcDialogue npcDialogue)
    {
       speechtext.text = @$"I went to <color=""blue"">{npcDialogue.direction1}</color> and saw <color=""green"">{IslandTypeStringazer(npcDialogue.islandOnDirection1)}</color> then went to <color=""blue"">{npcDialogue.direction2}</color> and saw <color=""green"">{IslandTypeStringazer(npcDialogue.islandOnDirection2)}</color>.";
       speechBubble.SetActive(true);

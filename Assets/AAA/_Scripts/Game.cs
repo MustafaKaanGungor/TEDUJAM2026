@@ -87,7 +87,6 @@ public class Game : MonoBehaviour
 
             if (npc.IsDead)
             {
-                Debug.Log($"{npc.name} �ld�. Yar�n yerine yenisi gelecek.");
                 _currentNpcs.Remove(npcObject);
                 Destroy(npcObject);
             }
@@ -121,6 +120,8 @@ public class Game : MonoBehaviour
         FillNpcSlots();                             // Bo� slotlar� doldur
         GameEvents.DayChanged?.Invoke(_currentDay);
         GameEvents.PlaySound?.Invoke("Cock");
+        GameEvents.ChangeInputAuthorityToNpc?.Invoke();
+
         if (_currentDay == 7) 
         {
             var (arg1,arg2) = _statTracker.GetStats();
@@ -137,6 +138,7 @@ public class Game : MonoBehaviour
     {
         if (_canPerform)
         {
+            //ui da kitlenmeli
             _canPerform = false;
             GameEvents.ChangeInputAuthorityToNpc?.Invoke();
         }
