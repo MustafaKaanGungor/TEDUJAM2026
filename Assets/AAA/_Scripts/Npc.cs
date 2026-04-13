@@ -183,6 +183,7 @@ public class Npc : MonoBehaviour
         if (isDead)
         {
             IsDead = true;
+            GameEvents.NpcDied?.Invoke();
         }
         else
         {

@@ -93,10 +93,12 @@ public class Game : MonoBehaviour
             }
             else
             {
+                GameEvents.NpcSuccessful?.Invoke();
                 //Debug.Log($"{npc.name} sa� ayr�ld�. Yar�n geri gelecek.");
                 npcObject.transform.position = _spawnTransform.position;
                 if(npc.NpcData.LastVisitedIsland == npc.NpcData.DesiredIsland)
                 {
+                    
                     npc.NpcData.DesiredIsland = GetDesiredIsland(npc.NpcData.DesiredIsland);
                 }
                 else
@@ -121,7 +123,7 @@ public class Game : MonoBehaviour
         FillNpcSlots();                             // Bo� slotlar� doldur
         GameEvents.DayChanged?.Invoke(_currentDay);
         GameEvents.PlaySound?.Invoke("Cock");
-        if (_currentDay == 7) 
+        if (_currentDay == 2) 
         {
             var (arg1,arg2) = _statTracker.GetStats();
             GameEvents.GameEnd?.Invoke(arg1,arg2,map.mapArray);

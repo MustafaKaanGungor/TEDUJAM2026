@@ -2794,7 +2794,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ' 0 people sacrified their lives for your map'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 58e0072cb1e789f4e932c313a2ad452c, type: 2}
   m_sharedMaterial: {fileID: -3194187573247833282, guid: 58e0072cb1e789f4e932c313a2ad452c, type: 2}
@@ -4919,7 +4919,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ' 0 lives saved thanks to your map'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 58e0072cb1e789f4e932c313a2ad452c, type: 2}
   m_sharedMaterial: {fileID: -3194187573247833282, guid: 58e0072cb1e789f4e932c313a2ad452c, type: 2}

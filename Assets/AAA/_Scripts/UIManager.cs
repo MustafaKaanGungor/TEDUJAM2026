@@ -54,8 +54,8 @@ public class UIManager : MonoBehaviour
 
         gameEndScreen.SetActive(true);
 
-        deadPeopleStatText.text = arg1 + " people sacrified their lives for your map";
-        successfulPeopleStatText.text = arg2 + " lives saved thanks to your map";
+        deadPeopleStatText.text = arg1.ToString() + " people sacrified their lives for your map";
+        successfulPeopleStatText.text = arg2.ToString() + " lives saved thanks to your map";
         for(int i = 0; i < 5; i++)
         {
             for(int j = 0; j < 5; j++)
