@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 [CreateAssetMenu(fileName = "NpcData", menuName = "Data/NpcData")]
 public class NpcData : ScriptableObject
@@ -8,6 +9,7 @@ public class NpcData : ScriptableObject
     [field: SerializeField] public Sprite NpcSprite { get; private set; }
     [field: SerializeField] public NpcDialogue Dialogues { get; private set; } = new NpcDialogue();
     [field: SerializeField] public IslandType DesiredIsland { get; set; }
+    [HideInInspector] public IslandType LastVisitedIsland { get; set; }
     //[HideInInspector] public NpcState State { get; set; } = NpcState.alive;
     
     public enum NpcState
