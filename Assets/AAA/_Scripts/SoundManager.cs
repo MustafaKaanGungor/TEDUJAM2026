@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    private Dictionary<string, GameObject> _soundPrefabs = new();
-    [SerializeField] private List<SoundPrefab> _soundPrefabsList;
-
+    private Dictionary<string, AudioClip> _soundPrefabs = new();
+    [SerializeField] private List<SoundClips> _soundPrefabsList;
+    [SerializeField] private SFXDespawn _audioSourcePrefab; // Havuza alýnacak prefab, üzerinde bir AudioSource bileþeni içermelidir.
     private void Awake()
     {
         foreach (var sound in _soundPrefabsList)
         {
             if (!_soundPrefabs.ContainsKey(sound.Key))
             {
-                _soundPrefabs.Add(sound.Key, sound.Prefab);
+                _soundPrefabs.Add(sound.Key, sound.Clip);
             }
             else
             {
@@ -34,10 +34,11 @@ public class SoundManager : MonoBehaviour
 
     private void OnPlaySound(string key)
     {
-        // Dictionary içinde döngü yapmak yerine doðrudan anahtar ile sorgulama yapýlýr.
-        if (_soundPrefabs.TryGetValue(key, out GameObject prefabToSpawn))
+        if (_soundPrefabs.TryGetValue(key, out AudioClip clipToPlay))
         {
-            LeanPool.Spawn(prefabToSpawn, transform.position, Quaternion.identity, this.transform);
+            // Spawn iþlemi GetComponent yükünden kurtarýldý. Doðrudan AudioPlayer tipinde spawn ediliyor.
+            SFXDespawn player = LeanPool.Spawn(_audioSourcePrefab, transform.position, Quaternion.identity, this.transform);
+            player.PlaySound(clipToPlay);
         }
         else
         {
@@ -47,8 +48,8 @@ public class SoundManager : MonoBehaviour
 }
 
 [System.Serializable]
-public struct SoundPrefab
+public struct SoundClips
 {
     public string Key;
-    public GameObject Prefab; // Havuza alýnacak bu prefabýn üzerinde bir AudioSource bileþeni olmalýdýr.
+    public AudioClip Clip; // Havuza alýnacak bu prefabýn üzerinde bir AudioSource bileþeni olmalýdýr.
 }

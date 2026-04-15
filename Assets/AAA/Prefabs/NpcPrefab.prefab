@@ -46,11 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NpcData: {fileID: 0}
-  _centerTarget: {x: 0, y: -0.5, z: 4}
+  _centerTarget: {x: 0, y: -0.8, z: 4}
   _jumpPower: 0.25
-  _numJumps: 4
-  _duration: 2
-  _endTarget: {x: 15, y: -0.5, z: 4}
+  _numJumps: 3
+  _duration: 1.5
+  _endTarget: {x: 15, y: -0.8, z: 4}
 --- !u!212 &1133582659692732208
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -103,6 +103,6 @@ SpriteRenderer:
   m_Size: {x: 0.48, y: 0.48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0

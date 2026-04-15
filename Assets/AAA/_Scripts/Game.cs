@@ -1,9 +1,7 @@
-using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,7 +16,6 @@ public class Game : MonoBehaviour
     [SerializeField] private InputActionReference _action;
     private bool _canPerform = false;
     private int _currentNpcIndex = 0;
-    private int _nextNpcIndex = 0;
     private const int MAX_NPC_COUNT = 3;
     private MapGenerator map;
     private StatTracker _statTracker;
@@ -26,18 +23,26 @@ public class Game : MonoBehaviour
     //private MapNode[,] _map;
     private void OnEnable()
     {
+
         _action.action.performed += ChangeInputAuthorityToNpc;
         GameEvents.ChangeInputAuthorityToPlayer += OnChangeInputAuthorityToPlayer;
         GameEvents.MapGenerated += OnMapGenerated;
+        GameEvents.TutorialFinished_TutorialUI += OnTutorialFinished;
     }
+
+
 
     private void OnDisable()
     {
         _action.action.performed -= ChangeInputAuthorityToNpc;
         GameEvents.ChangeInputAuthorityToPlayer -= OnChangeInputAuthorityToPlayer;
         GameEvents.MapGenerated -= OnMapGenerated;
+        GameEvents.TutorialFinished_TutorialUI -= OnTutorialFinished;
+
 
     }
+
+
 
     private void Awake() {
         map = GetComponent<MapGenerator>();
@@ -54,18 +59,15 @@ public class Game : MonoBehaviour
     private void Start()
     {
         GameEvents.PlaySound("Ost");
-        DayStarted();
-        
+        GameEvents.ShowTutorial_Game?.Invoke();
     }
-    private async void StartDayCycle()
+    private void StartDayCycle()
     {
-        await DayCycleAsync();
+        StartCoroutine(DayCycleCoroutine());
     }
-    private async Task DayCycleAsync()
-    {
-        //Debug.Log($"G�n {_currentDay} ba�lad�. NPC say�s�: {_currentNpcs.Count}");
 
-        // Snapshot al � d�ng� i�inde liste de�i�ecek
+    private IEnumerator DayCycleCoroutine()
+    {
         var todayNpcs = new List<GameObject>(_currentNpcs);
 
         foreach (var npcObject in todayNpcs)
@@ -73,17 +75,20 @@ public class Game : MonoBehaviour
             npcObject.SetActive(true);
             Npc npc = npcObject.GetComponent<Npc>();
 
-            // NPC turunu bitirene kadar bekle
-            TaskCompletionSource<bool> tcs = new();
+            // Önce event'e subscribe ol
+            bool npcFinished = false;
             Action onFinished = null;
             onFinished = () =>
             {
                 npc.OnNpcFinished -= onFinished;
-                tcs.TrySetResult(true);
+                npcFinished = true;
             };
             npc.OnNpcFinished += onFinished;
-            await tcs.Task;
 
+            // Sonra NPC'yi başlat — artık race condition yok
+            npc.StartNpc();
+
+            yield return new WaitUntil(() => npcFinished);
 
             if (npc.IsDead)
             {
@@ -93,35 +98,26 @@ public class Game : MonoBehaviour
             else
             {
                 GameEvents.NpcSuccessful?.Invoke();
-                //Debug.Log($"{npc.name} sa� ayr�ld�. Yar�n geri gelecek.");
                 npcObject.transform.position = _spawnTransform.position;
-                if(npc.NpcData.LastVisitedIsland == npc.NpcData.DesiredIsland)
-                {
-                    
+
+                if (npc.NpcData.LastVisitedIsland == npc.NpcData.DesiredIsland)
                     npc.NpcData.DesiredIsland = GetDesiredIsland(npc.NpcData.DesiredIsland);
-                }
-                else
-                {
-                    npc.NpcData.DesiredIsland = npc.NpcData.DesiredIsland;
-                }
-
             }
-            npcObject.SetActive(false);
 
-            await Task.Delay(2000);
+            npcObject.SetActive(false);
+            yield return new WaitForSeconds(2f);
         }
 
-        Debug.Log("T�m NPC'ler bitti. G�n sonlan�yor...");
+        Debug.Log("Tüm NPC'ler bitti. Gün sonlanıyor...");
         DayFinished();
-
         DayStarted();
     }
     private void DayStarted()
     {
-        _currentDay++;
-        FillNpcSlots();                             // Bo� slotlar� doldur
-        GameEvents.DayChanged?.Invoke(_currentDay);
         GameEvents.PlaySound?.Invoke("Cock");
+        _currentDay++;
+        FillNpcSlots();                             
+        GameEvents.DayChanged?.Invoke(_currentDay);
         GameEvents.ChangeInputAuthorityToNpc?.Invoke();
 
         if (_currentDay == 7) 
@@ -130,7 +126,7 @@ public class Game : MonoBehaviour
             GameEvents.GameEnd?.Invoke(arg1,arg2,map.mapArray);
             return;
         }
-        _ = DayCycleAsync();
+        StartDayCycle();
     }
     private void DayFinished()
     {
@@ -166,10 +162,8 @@ public class Game : MonoBehaviour
                 Debug.LogWarning("Eklenecek yeni NPC kalmad�!");
                 break;
             }
-
             NpcData data = _allNpcs[0];
             _allNpcs.RemoveAt(0);
-
             data.Dialogues.direction1 = (Direction) UnityEngine.Random.Range(0, 8);
             while (true)
             {
@@ -180,23 +174,14 @@ public class Game : MonoBehaviour
                     break;
                 }
             }
-
-
             data.DesiredIsland = GetDesiredIsland();
-            Debug.Log(data.Dialogues.direction1);
-            Debug.Log( data.Dialogues.direction2);
-            
             data.Dialogues.islandOnDirection1 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y].type;
             data.Dialogues.islandOnDirection2 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x + (int)GetDirectionMovement(data.Dialogues.direction2).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y + (int)GetDirectionMovement(data.Dialogues.direction2).y].type;
-            
             GameObject newNpcObj = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
             newNpcObj.SetActive(false);
-
             Npc npc = newNpcObj.GetComponent<Npc>();
             npc.Initialize(data,map);
-
             _currentNpcs.Add(newNpcObj);
-            //Debug.Log($"Yeni NPC eklendi: {data.name}. Aktif NPC say�s�: {_currentNpcs.Count}");
         }
     }
 
@@ -224,26 +209,6 @@ public class Game : MonoBehaviour
                 return new Vector2(0, 0);
         }
     }
-
-    //private IslandType GetDesiredIsland(IslandType island = default )
-    //{
-    //    List<MapNode> islands = new List<MapNode>();
-    //    IslandType desiredIsland;
-    //    for (int x = 0; x < 5; x++)
-    //        for (int y = 0; y < 5; y++)
-    //            if (map.mapArray[x, y].type >= IslandType.ISLAND1 && map.mapArray[x, y].type <= IslandType.ISLAND6)
-    //                islands.Add(map.mapArray[x, y]);
-    //    while (true)
-    //    {
-    //        desiredIsland = islands[UnityEngine.Random.Range(0, islands.Count)].type;
-    //        if (desiredIsland != island)
-    //        {
-    //            break;
-    //        }
-    //    }
-
-    //    return desiredIsland;
-    //}
     private IslandType GetDesiredIsland(IslandType islandToAvoid = default)
     {
         List<IslandType> availableIslands = new List<IslandType>();
@@ -267,5 +232,9 @@ public class Game : MonoBehaviour
             return default; 
         }
         return availableIslands[UnityEngine.Random.Range(0, availableIslands.Count)];
+    }
+    private void OnTutorialFinished()
+    {
+        DayStarted();
     }
 }

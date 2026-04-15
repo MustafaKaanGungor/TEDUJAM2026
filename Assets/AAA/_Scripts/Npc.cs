@@ -31,7 +31,7 @@ public class Npc : MonoBehaviour
         GameEvents.ChangeInputAuthorityToNpc += OnChangeInputAuthorityToNpc;
         GameEvents.PlayerMadeASelection += OnCheckPlayerChoice;
         _isPerforming = false;
-        _canMove = true;
+        _canMove = false;
         _currentStage = Stage.Stage1;
         //IsDead = false;
 
@@ -42,6 +42,11 @@ public class Npc : MonoBehaviour
         GameEvents.PlayerMadeASelection -= OnCheckPlayerChoice;
         _isPerforming = false;
         _canMove = false;
+        DOTween.Kill(transform);
+    }
+    public void StartNpc()
+    {
+        _canMove = true;
     }
 
     private void OnChangeInputAuthorityToNpc()
@@ -63,7 +68,8 @@ public class Npc : MonoBehaviour
         Stage1,
         Stage2,
         Stage3,
-        Stage4
+        Stage4,
+        Finished
     }
 
     private void NextStage()
@@ -95,17 +101,12 @@ public class Npc : MonoBehaviour
     {
         _isPerforming = true;
         MoveToCenter();
-        GameEvents.PlaySound("Footstep");
     }
-
     private void PerformStage2()
     {
         _isPerforming = true;
 
         WorldUIManager.instance.ShowSpeechBubble(NpcData.Dialogues);
-        //Debug.Log("NPC merkeze ula�t� ve bilgi veriyor.");
-
-        
         DOVirtual.DelayedCall(1f, () =>
         {
             NextStage();
@@ -129,17 +130,17 @@ public class Npc : MonoBehaviour
     private void PerformStage4()
     {
         _isPerforming = true;
-        GameEvents.PlaySound("Footstep");
         MoveToEnd();
     }
 
     public void MoveToCenter()
     {
+        GameEvents.PlaySound("Footstep");
+
         transform.DOJump(_centerTarget, _jumpPower, _numJumps, _duration)
             .SetEase(Ease.Linear)
             .OnComplete(() =>
             {
-                //Debug.Log("NPC merkeze ula�t� ve durdu.");
                 NextStage();
                 _isPerforming = false; // Animasyon bitti, Update d�ng�s� devam edebilir
                 _canMove = false;
@@ -150,23 +151,22 @@ public class Npc : MonoBehaviour
 
     private void MoveToEnd()
     {
+        GameEvents.PlaySound("Footstep");
         transform.DOJump(_endTarget, _jumpPower, _numJumps, _duration)
            .SetEase(Ease.Linear)
            .OnComplete(() =>
            {
-               // E�er sahnede ba�ka bir a�ama yoksa veya obje yok edilecekse i�lemleri buraya ekle
+               _currentStage = Stage.Finished;
                _isPerforming = false;
                _canMove = false;
                GameEvents.ChangeInputAuthorityToNpc?.Invoke();
                OnNpcFinished?.Invoke();
-               //this.gameObject.SetActive(false);
            });
     }
     public void Die()
     {
         IsDead = true;
     }
-    //oyuncu secim yapinca event ile bu fonksiyonu cagir
     private void OnCheckPlayerChoice(Direction direction1, Direction direction2)
     {
         var (isDead, island1, island2) = _map.ExploreDirections(direction1, direction2);
