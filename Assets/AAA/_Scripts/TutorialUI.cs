@@ -13,8 +13,7 @@ public class TutorialUI : MonoBehaviour
     [SerializeField] private InputActionReference _actionReference;
     [SerializeField] private Button _continueButton;
     [SerializeField] private Button _previousButton;
-    //bunu world canvasa koymamamk istedigimden kaldiriyorum
-    //[SerializeField] private Button _SkipTutorialButton;
+    [SerializeField] private Button _skipTutorialButton;
     [SerializeField] private GameObject _turorialPanel;
     private TMP_Text _continueButtonText;
 
@@ -23,7 +22,7 @@ public class TutorialUI : MonoBehaviour
         _actionReference.action.performed += OnNextSentenceButtonPerformed;
         _continueButton.onClick.AddListener(OnNextButtonClicked);
         _previousButton.onClick.AddListener(OnPreviousButtonClicked);
-        //_SkipTutorialButton.onClick.AddListener(ExitTutorial);
+        _skipTutorialButton.onClick.AddListener(ExitTutorial);
         GameEvents.ShowTutorial_Game += OnShowTutorial;
         _previousButton.interactable = false;
     }
@@ -40,7 +39,7 @@ public class TutorialUI : MonoBehaviour
         _continueButton.onClick.RemoveListener(OnNextButtonClicked);
         GameEvents.ShowTutorial_Game -= OnShowTutorial;
         _previousButton.onClick.RemoveListener(OnPreviousButtonClicked);
-        //_SkipTutorialButton.onClick.RemoveAllListeners();
+        _skipTutorialButton.onClick.RemoveAllListeners();
     }
     public void OnNextSentenceButtonPerformed(InputAction.CallbackContext context)
     {
@@ -82,11 +81,12 @@ public class TutorialUI : MonoBehaviour
     {
         _turorialPanel.SetActive(true);
     }
-    public void ExitTutorial()
+    private void ExitTutorial()
     {
-        
+
         GameEvents.TutorialFinished_TutorialUI?.Invoke();
         _turorialPanel.SetActive(false);
+        _skipTutorialButton.gameObject.SetActive(false);
     }
 
 }

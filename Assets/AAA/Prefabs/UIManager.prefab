@@ -549,6 +549,7 @@ MonoBehaviour:
   _actionReference: {fileID: 392368643174621059, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _continueButton: {fileID: 6549738720707259032}
   _previousButton: {fileID: 8953861213434419927}
+  _skipTutorialButton: {fileID: 6636571103786823541}
   _turorialPanel: {fileID: 6911291975295193058}
 --- !u!1 &1640800766255443093
 GameObject:
@@ -4431,28 +4432,4 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4077841545077028480}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1890222735045954406}
-        m_TargetAssemblyTypeName: TutorialUI, Assembly-CSharp
-        m_MethodName: ExitTutorial
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 9039760636494386226}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
