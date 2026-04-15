@@ -46,7 +46,7 @@ public class Game : MonoBehaviour
 
     private void Awake() {
         map = GetComponent<MapGenerator>();
-        _statTracker = new StatTracker();
+        _statTracker = GetComponent<StatTracker>();
         var shuffledNpcs = _allNpcs.OrderBy(a => rng.Next()).ToList();
         _allNPCS = shuffledNpcs;
     }
