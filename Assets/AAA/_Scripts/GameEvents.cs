@@ -15,4 +15,5 @@ public static class GameEvents
     public static Action<int, int, MapNode[,]> GameEnd;
     public static Action ShowTutorial_Game;
     public static Action TutorialFinished_TutorialUI;
+    public static Action<bool> PauseGame_Game;
 }

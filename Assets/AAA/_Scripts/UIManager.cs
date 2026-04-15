@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -28,17 +29,26 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Sprite landmark3Sprite;
     [SerializeField] private Sprite landmark4Sprite;
     [SerializeField] private Sprite baseSprite;
-
+    [Header("Pause Panel")]
+    [SerializeField] private GameObject _pausePanel;
     private void OnEnable()
     {
         GameEvents.DayChanged += UpdateDayUI;
         GameEvents.GameEnd += OnGameEnd;
+        GameEvents.PauseGame_Game += OnGamePused;
     }
 
     private void OnDisable()
     {
         GameEvents.DayChanged -= UpdateDayUI;
         GameEvents.GameEnd -= OnGameEnd;
+        GameEvents.PauseGame_Game -= OnGamePused;
+
+    }
+
+    private void OnGamePused(bool obj)
+    {
+        _pausePanel.SetActive(obj);
     }
 
     private void UpdateDayUI(int day)

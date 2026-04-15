@@ -13,6 +13,8 @@ public class TutorialUI : MonoBehaviour
     [SerializeField] private InputActionReference _actionReference;
     [SerializeField] private Button _continueButton;
     [SerializeField] private Button _previousButton;
+    //bunu world canvasa koymamamk istedigimden kaldiriyorum
+    //[SerializeField] private Button _SkipTutorialButton;
     [SerializeField] private GameObject _turorialPanel;
     private TMP_Text _continueButtonText;
 
@@ -21,6 +23,7 @@ public class TutorialUI : MonoBehaviour
         _actionReference.action.performed += OnNextSentenceButtonPerformed;
         _continueButton.onClick.AddListener(OnNextButtonClicked);
         _previousButton.onClick.AddListener(OnPreviousButtonClicked);
+        //_SkipTutorialButton.onClick.AddListener(ExitTutorial);
         GameEvents.ShowTutorial_Game += OnShowTutorial;
         _previousButton.interactable = false;
     }
@@ -37,27 +40,14 @@ public class TutorialUI : MonoBehaviour
         _continueButton.onClick.RemoveListener(OnNextButtonClicked);
         GameEvents.ShowTutorial_Game -= OnShowTutorial;
         _previousButton.onClick.RemoveListener(OnPreviousButtonClicked);
+        //_SkipTutorialButton.onClick.RemoveAllListeners();
     }
     public void OnNextSentenceButtonPerformed(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
-        if (_currentIndex < _sentences.Length - 1)
-        {
-            _currentIndex++;
-            ShowSentence(_currentIndex);
-            _previousButton.interactable = true;
-            if (_currentIndex == _sentences.Length -1)
-            {
-                Debug.Log("text changed");
-                _continueButtonText.text = "I get it";
-            }
-        }
-        else
-        {
-            ExitTutorial();
-        }
+        OnNextButtonClicked();
     }
-    public void OnNextButtonClicked()
+    private void OnNextButtonClicked()
     {
         if (_currentIndex < _sentences.Length - 1)
         {
@@ -74,7 +64,7 @@ public class TutorialUI : MonoBehaviour
             ExitTutorial();
         }
     }
-    public void OnPreviousButtonClicked()
+    private void OnPreviousButtonClicked()
     {
         _currentIndex--;
         ShowSentence(_currentIndex);
@@ -84,7 +74,7 @@ public class TutorialUI : MonoBehaviour
         }
 
     }
-    public void ShowSentence(int index)
+    private void ShowSentence(int index)
     {
         _tutorialSentenceText.text = _sentences[_currentIndex];
     }
@@ -92,8 +82,9 @@ public class TutorialUI : MonoBehaviour
     {
         _turorialPanel.SetActive(true);
     }
-    private void ExitTutorial()
+    public void ExitTutorial()
     {
+        
         GameEvents.TutorialFinished_TutorialUI?.Invoke();
         _turorialPanel.SetActive(false);
     }

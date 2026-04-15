@@ -14,26 +14,27 @@ public class Game : MonoBehaviour
     [SerializeField] private GameObject _npcPrefab;
     [SerializeField] private Transform _spawnTransform;
     [SerializeField] private InputActionReference _action;
+    [SerializeField] private InputActionReference _cancelAction;
     private bool _canPerform = false;
     private int _currentNpcIndex = 0;
     private const int MAX_NPC_COUNT = 3;
     private MapGenerator map;
     private StatTracker _statTracker;
     private static System.Random rng = new System.Random();
+    private bool _isGamePused = false;
     //private MapNode[,] _map;
     private void OnEnable()
     {
-
+        _cancelAction.action.performed += OnCancelPerformed;
         _action.action.performed += ChangeInputAuthorityToNpc;
         GameEvents.ChangeInputAuthorityToPlayer += OnChangeInputAuthorityToPlayer;
         GameEvents.MapGenerated += OnMapGenerated;
         GameEvents.TutorialFinished_TutorialUI += OnTutorialFinished;
     }
 
-
-
     private void OnDisable()
     {
+        _cancelAction.action.performed -= OnCancelPerformed;
         _action.action.performed -= ChangeInputAuthorityToNpc;
         GameEvents.ChangeInputAuthorityToPlayer -= OnChangeInputAuthorityToPlayer;
         GameEvents.MapGenerated -= OnMapGenerated;
@@ -44,7 +45,8 @@ public class Game : MonoBehaviour
 
 
 
-    private void Awake() {
+    private void Awake()
+    {
         map = GetComponent<MapGenerator>();
         _statTracker = GetComponent<StatTracker>();
         var shuffledNpcs = _allNpcs.OrderBy(a => rng.Next()).ToList();
@@ -52,7 +54,7 @@ public class Game : MonoBehaviour
     }
     private void OnMapGenerated(MapNode[,] obj)
     {
-        
+
     }
 
 
@@ -116,14 +118,14 @@ public class Game : MonoBehaviour
     {
         GameEvents.PlaySound?.Invoke("Cock");
         _currentDay++;
-        FillNpcSlots();                             
+        FillNpcSlots();
         GameEvents.DayChanged?.Invoke(_currentDay);
         GameEvents.ChangeInputAuthorityToNpc?.Invoke();
 
-        if (_currentDay == 7) 
+        if (_currentDay == 7)
         {
-            var (arg1,arg2) = _statTracker.GetStats();
-            GameEvents.GameEnd?.Invoke(arg1,arg2,map.mapArray);
+            var (arg1, arg2) = _statTracker.GetStats();
+            GameEvents.GameEnd?.Invoke(arg1, arg2, map.mapArray);
             return;
         }
         StartDayCycle();
@@ -164,7 +166,7 @@ public class Game : MonoBehaviour
             }
             NpcData data = _allNpcs[0];
             _allNpcs.RemoveAt(0);
-            data.Dialogues.direction1 = (Direction) UnityEngine.Random.Range(0, 8);
+            data.Dialogues.direction1 = (Direction)UnityEngine.Random.Range(0, 8);
             while (true)
             {
                 Direction secondDirection = (Direction)UnityEngine.Random.Range(0, 8);
@@ -175,12 +177,12 @@ public class Game : MonoBehaviour
                 }
             }
             data.DesiredIsland = GetDesiredIsland();
-            data.Dialogues.islandOnDirection1 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y].type;
-            data.Dialogues.islandOnDirection2 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x + (int)GetDirectionMovement(data.Dialogues.direction2).x,2 + (int)GetDirectionMovement(data.Dialogues.direction1).y + (int)GetDirectionMovement(data.Dialogues.direction2).y].type;
+            data.Dialogues.islandOnDirection1 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x, 2 + (int)GetDirectionMovement(data.Dialogues.direction1).y].type;
+            data.Dialogues.islandOnDirection2 = map.mapArray[2 + (int)GetDirectionMovement(data.Dialogues.direction1).x + (int)GetDirectionMovement(data.Dialogues.direction2).x, 2 + (int)GetDirectionMovement(data.Dialogues.direction1).y + (int)GetDirectionMovement(data.Dialogues.direction2).y].type;
             GameObject newNpcObj = Instantiate(_npcPrefab, _spawnTransform.position, Quaternion.identity);
             newNpcObj.SetActive(false);
             Npc npc = newNpcObj.GetComponent<Npc>();
-            npc.Initialize(data,map);
+            npc.Initialize(data, map);
             _currentNpcs.Add(newNpcObj);
         }
     }
@@ -229,12 +231,27 @@ public class Game : MonoBehaviour
         }
         if (availableIslands.Count == 0)
         {
-            return default; 
+            return default;
         }
         return availableIslands[UnityEngine.Random.Range(0, availableIslands.Count)];
     }
     private void OnTutorialFinished()
     {
         DayStarted();
+    }
+    private void OnCancelPerformed(InputAction.CallbackContext context)
+    {
+        _isGamePused = !_isGamePused;
+        if (_isGamePused)
+        {
+
+            Time.timeScale = 0;
+            GameEvents.PauseGame_Game?.Invoke(_isGamePused);
+        }
+        else
+        {
+            Time.timeScale = 1;
+            GameEvents.PauseGame_Game?.Invoke(_isGamePused);
+        }
     }
 }
