@@ -1,7 +1,7 @@
 # 🗺️ Map the Islands
 
 <p align="center">
-  <img src="itchbanner.png" alt="Map the Islands Banner" width="60%" />
+  <img src="Assets/itchbanner.png" alt="Map the Islands Banner" width="60%" />
 </p>
 
 <p align="center">
