@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT" />
 </p>
 
-<h3> *Fill a blank map using the accounts of strangers.* </h3>
+<h3> Fill a blank map using the accounts of strangers. </h3>
 
 As a cartographer, your task is to shape your blank parchment based on the reports provided by sailors. Each day, three sailors visit your shop and share their previous routes to provide clues about the world's layout. The routes you provide result in either a new discovery or the loss of an information source.
 
