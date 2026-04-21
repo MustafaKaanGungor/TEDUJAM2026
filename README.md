@@ -1,7 +1,7 @@
 # 🗺️ Map the Islands
 
 <p align="center">
-  <img src="itchbanner.png" alt="Map the Islands Banner" width="100%" />
+  <img src="itchbanner.png" alt="Map the Islands Banner" width="60%" />
 </p>
 
 <p align="center">
@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT" />
 </p>
 
-> *Fill a blank map using the accounts of strangers.*
+<h3> *Fill a blank map using the accounts of strangers.* </h3>
 
 As a cartographer, your task is to shape your blank parchment based on the reports provided by sailors. Each day, three sailors visit your shop and share their previous routes to provide clues about the world's layout. The routes you provide result in either a new discovery or the loss of an information source.
 
@@ -29,10 +29,7 @@ As a cartographer, your task is to shape your blank parchment based on the repor
 
 ## 📥 Play Now
 
-| Platform | Link |
-|----------|------|
-| 🌐 Web Build | [ruhan07.itch.io/map-the-islands](https://ruhan07.itch.io/map-the-islands) |
-| 🪟 Windows | [ruhan07.itch.io/map-the-islands](https://ruhan07.itch.io/map-the-islands) |
+Game is available on Web and Windows on [itch.io](https://ruhan07.itch.io/map-the-islands) 
 
 ---
 
